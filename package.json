@@ -1,0 +1,13 @@
+{
+  "name": "ctc_srv",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node srv/server.js",
+    "build": "mbt build",
+    "deploy": "mbt build && cf deploy mta_archives/CTC_srv_0.0.1.mtar"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
