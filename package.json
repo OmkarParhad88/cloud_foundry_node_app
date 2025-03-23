@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node srv/server.js",
     "build": "mbt build",
-    "deploy": "mbt build && cf deploy mta_archives/CTC_srv_0.0.1.mtar"
+    "deploy": "mbt build && cf deploy mta_archives/CTC_srv_0.0.1.mtar",
+    "install": "cd srv && npm install"
   },
   "author": "",
   "license": "ISC",
