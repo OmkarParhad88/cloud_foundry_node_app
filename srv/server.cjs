@@ -1,105 +1,55 @@
 
+
+
+
 require("dotenv").config({ path: "default-env.json" });
 const express = require("express");
-const SapCfAxios = require("sap-cf-axios").default;
-const axios = require("axios");
-const qs = require("qs");
-const fs = require("fs");
+const {BasicAuthAxios , OAuth2Axios} = require("./config/destinations.config")
+const { router: SFRoutes  ,setAxios: setSF} = require("./routes/SF.routes");
+const { router: AdobeRoutes, setAxios: setAdobe } = require("./routes/Adobe.routes");
 
 const app = express();
-const PORT = 8080;
-let SF_axios ;
-let Adobe_axios ;
+const PORT =8080;
 
-// 🔁 Async AxiosInstance helper
-const AxiosInstance = async (destinationName) => {
-    if (process.env.VCAP_SERVICES) {
+app.use(express.json());
+app.use("/", SFRoutes);
+app.use("/", AdobeRoutes);
 
-        return SapCfAxios(destinationName);
-    } else {
-        const envData = JSON.parse(fs.readFileSync("./default-env.json", "utf8"));
-        const destinations = envData.VCAP_SERVICES.destination;
-        // const destinations = require("./default-env.json").VCAP_SERVICES.destination;
-        const destination = destinations.find(dest => dest.name === destinationName);
-        if (!destination) throw new Error(`Destination ${destinationName} not found`);
-
-        const { url, authentication } = destination.credentials;
-
-        if (authentication === "BasicAuthentication") {
-            return axios.create({
-                baseURL: url,
-                auth: {
-                    username: destination.credentials.username,
-                    password: destination.credentials.password
-                }
-            });
-        }
-
-        if (authentication === "OAuth2ClientCredentials") {
-            const tokenResponse = await axios.post(
-                destination.credentials.tokenServiceURL,
-                qs.stringify({
-                    grant_type: "client_credentials",
-                    client_id: destination.credentials.clientid,
-                    client_secret: destination.credentials.clientsecret
-                }),
-                {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    }
-                }
-            );
-
-            const accessToken = tokenResponse.data.access_token;
-            
-            return axios.create({
-                baseURL: url,
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            });
-        }
-
-        throw new Error(`Unsupported authentication type: ${authentication}`);
-    }
-};
-
-app.get("/prdcomponent", async (req, res) => {
-    try {
-        const response = await SF_axios.get("/odata/v2/FOPayComponent", {
-            params: { $format: "json" },
-            headers: { accept: "application/json" }
-        });
-
-        res.status(200).json(response.data.d.results);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+app.listen(PORT, async () => {
+    const SF_axios = await BasicAuthAxios("SFSFDEST");
+    const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api")
+   
+    setSF(SF_axios);
+    setAdobe(Adobe_axios);
+    console.log(`Server running on port : ${PORT}`);
 });
 
-app.get("/", async (req, res) => {
-    try {
-        const response = await SF_axios.get("/odata/v2/");
-        res.status(200).json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
-app.get("/adsapi", async (req, res) => {
-    try {
-        const response = await Adobe_axios.get("/v1/forms?limit=0&offset=0&select=formData");
-        res.status(200).json(response.data);
 
-        console.log(response.data)
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-
-});
-
-app.listen(PORT, async() => {
-    SF_axios =   await AxiosInstance("SFSFDEST");
-    Adobe_axios =   await AxiosInstance("abobe_ads_rest_api");
-    console.log(`🚀 Server running on port ${PORT}`);
-});
+// <?xml version="1.0" encoding="UTF-8"?>
+// <form1>
+//   <LabelForm>
+//     <DeliveryId>Mirum est ut animus agitatione motuque corporis excitetur.</DeliveryId>
+//     <Position>Ego ille</Position>
+//     <MaterialNo>Si manu vacuas</MaterialNo>
+//     <Quantity>Apros tres et quidem</Quantity>
+//     <Package>Mirum est</Package>
+//     <QRCode>012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789</QRCode>
+//   </LabelForm>
+//   <LabelForm>
+//     <DeliveryId>Ad retia sedebam: erat in proximo non venabulum aut lancea, sed stilus et pugilares:</DeliveryId>
+//     <Position>Licetib auctor</Position>
+//     <MaterialNo>Proinde</MaterialNo>
+//     <Quantity>Am undique</Quantity>
+//     <Package>Ad retia sedebam</Package>
+//     <QRCode>012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789</QRCode>
+//   </LabelForm>
+//   <LabelForm>
+//     <DeliveryId>meditabar aliquid enotabamque, ut, si manus vacuas, plenas tamen ceras reportarem.</DeliveryId>
+//     <Position>Vale</Position>
+//     <MaterialNo>Ego ille</MaterialNo>
+//     <Quantity>Si manu vacuas</Quantity>
+//     <Package>Apros tres et quidem</Package>
+//     <QRCode>012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789</QRCode>
+//   </LabelForm>
+// </form1>
