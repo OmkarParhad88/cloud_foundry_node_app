@@ -1,20 +1,30 @@
 _schema-version: "3.2"
 ID: CTC_srv
-version: 0.0.1
 description: A simple Node.js application deployed on SAP BTP
-
+version: 0.0.1
 modules:
   - name: CTC_srv_srv
     type: nodejs
     path: srv
+    requires:
+      - name: destination-dev       
+        parameters:
+          service-name: destination-dev 
+      - name: ctc_srv-xsuaa
     build-parameters:
       builder: npm
-    requires:
-      - name: node_destination_service
-
+ 
 resources:
-  - name: node_destination_service
+  - name: destination-dev 
     type: org.cloudfoundry.managed-service
     parameters:
       service: destination
       service-plan: lite
+      service-name: destination-dev
+
+  - name: ctc_srv-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application

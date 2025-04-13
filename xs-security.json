@@ -1,0 +1,11 @@
+{
+    "xsappname": "ctc-srv-xsapp",
+    "tenant-mode": "dedicated",
+    "description": "XSUAA config for CTC_srv app",
+    "oauth2-configuration": {
+      "grant-types": [
+        "client_credentials"
+      ]
+    }
+}
+  
