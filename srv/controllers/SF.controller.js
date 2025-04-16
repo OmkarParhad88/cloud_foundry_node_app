@@ -10,7 +10,9 @@ const getFOPayComponents = async (req, res) => {
             params: { $format: "json" },
             headers: { accept: "application/json" }
         });
-        res.status(200).json(response.data.d.results);
+
+        var comps = response.data.d.results.map(item => item.name);
+        res.status(200).json(comps);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

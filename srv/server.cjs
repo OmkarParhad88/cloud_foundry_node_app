@@ -13,10 +13,14 @@ app.use("/", SFRoutes);
 app.use("/", AdobeRoutes);
 
 app.listen(PORT, async () => {
-    const SF_axios = await BasicAuthAxios("SFSFDEST");
-    const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api");
+    // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
+    const SF_axios = await BasicAuthAxios("SF");        // qae
+    // const SF_axios = await BasicAuthAxios("SF_PRD")  ;  // prd
     setSF(SF_axios);
-    setAdobe(Adobe_axios);
+    
+    const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
+    // setAdobe(Adobe_axios);
+
     console.log(`Server running on port : ${PORT}`);
 });
 
