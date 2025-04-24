@@ -1,7 +1,6 @@
 {
   "name": "ctc_srv",
   "version": "1.0.0",
- 
   "scripts": {
     "start": "node srv/server",
     "build": "mbt build",
@@ -10,5 +9,8 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "make": "^0.8.1"
+  }
 }

@@ -26,5 +26,18 @@ const getBase = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+const getCompanies = async (req, res) => {
+    try {
+        const response = await axios.get("/odata/v2/FOCompany", {
+            params: { $format: "json" },
+            headers: { accept: "application/json" }
+        });
 
-module.exports = { setAxios, getFOPayComponents, getBase };
+        var comps = response.data.d.results.map(item => item.name);
+        res.status(200).json(comps);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+module.exports = { setAxios, getFOPayComponents, getBase,getCompanies };

@@ -18,10 +18,10 @@ app.listen(PORT, async () => {
     // const SF_axios = await BasicAuthAxios("SF_PRD")  ;  // prd
     setSF(SF_axios);
     
-    const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
+    // const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
     // setAdobe(Adobe_axios);
 
-    console.log(`Server running on port : ${PORT}`);
+    console.log(`Server running on port : http://localhost:${PORT}/`);
 });
 
 
