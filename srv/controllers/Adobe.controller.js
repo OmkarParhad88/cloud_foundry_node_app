@@ -1,8 +1,3 @@
-let axios;
-
-const setAxios = (instance) => {
-    axios = instance;
-};
 
 const getForms = async (req, res) => {
     try {
@@ -67,4 +62,4 @@ const getCTCLetter = async (req, res) => {
     }
 };
 
-module.exports = { setAxios, getForms, getFormsTemplate, getCTCLetter };
+module.exports = {  getForms, getFormsTemplate, getCTCLetter };

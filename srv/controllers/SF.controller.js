@@ -1,22 +1,15 @@
-const e = require("express");
-
-let axios;
-
-const setAxios = (instance) => {
-  axios = instance;
-};
+const Sf_Api = require("../externalApi/Sf_Api");
+const { formatSAPDateCustom, imageToBase64 } = require("../utils/utils");
 
 const getFOPayComponents = async (req, res) => {
   try {
-    const response = await axios.get("/odata/v2/FOPayComponent", {
-      params: { $format: "json" },
-      headers: { accept: "application/json" },
-    });
-
-    var comps = response.data.d.results.map((item) => ({
+    const components = await Sf_Api.getFOPayComponentsResponse();
+    
+    var comps =components.map((item) => ({
       name: item.name,
       externalCode: item.externalCode,
     }));
+
     res.status(200).json(comps);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -25,36 +18,26 @@ const getFOPayComponents = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const UserData = await axios.get("/odata/v2/User", {
-      params: {
-        $format: "json",
-        $filter: `userId eq '${req.query.userid}'`,
-      },
-      headers: { accept: "application/json" },
-    });
-    res.status(200).json(UserData.data);
+    const UserData = await Sf_Api.getUserResponse(req.query.userid);
+    res.status(200).json(UserData);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 const getBase = async (req, res) => {
   try {
-    const response = await axios.get("/odata/v2/");
-    res.status(200).json(response.data);
+    const response = await Sf_Api.getBaseResponse();
+    res.status(200).json(response);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err });
   }
 };
 const getCompanies = async (req, res) => {
   try {
-    const response = await axios.get("/odata/v2/FOCompany", {
-      params: { $format: "json" },
-      headers: { accept: "application/json" },
-    });
-
-    var comps = response.data.d.results.map((item) =>( {
-     name: item.name,
-      externalCode:  item.externalCode,
+    const companies = await Sf_Api.getCompaniesResponse();
+    var comps = companies.map((item) => ({
+      name: item.name,
+      externalCode: item.externalCode,
     }));
     res.status(200).json(comps);
   } catch (err) {
@@ -63,36 +46,23 @@ const getCompanies = async (req, res) => {
 };
 const getEmpPayComponents = async (req, res) => {
   try {
-    const UserData = await axios.get("/odata/v2/User", {
-      params: {
-        $format: "json",
-        $filter: `userId eq '${req.query.userid}'`,
-      },
-      headers: { accept: "application/json" },
-    });
+    const userId = req.query.userid?.trim();
 
-    const EmpPayCompRecurring = await axios.get("/odata/v2/EmpPayCompRecurring", {
-      params: {
-        $format: "json",
-        $filter: `userId eq '${req.query.userid}'`,
-      },
-      headers: { accept: "application/json" },
-    });
+    const User = await Sf_Api.getUserResponse(userId);
+    const EmpPayCompsRecurring = await Sf_Api.getEmpPayCompRecurringResponse(userId);
+    const FOPayComponents = await Sf_Api.getFOPayComponentsResponse();
 
-    const FOPayComponent = await axios.get("/odata/v2/FOPayComponent", {
-      params: { $format: "json" },
-      headers: { accept: "application/json" },
-    });
-
-    var EmpPayComps = EmpPayCompRecurring.data.d.results.map((item) => ({
+    var EmpPayComps = EmpPayCompsRecurring.map((item) => ({
       payComponent: item.payComponent,
       paycompvalue: item.paycompvalue,
     }));
 
-    var FOPaycomps = FOPayComponent.data.d.results.map((item) => ({
+    var FOPaycomps = FOPayComponents.map((item) => ({
       name: item.name,
       externalCode: item.externalCode,
     }));
+
+    //EmpPayCompNonRecurring
 
     var comps = EmpPayComps.map((item) => {
       const FOPaycomp = FOPaycomps.find(
@@ -103,45 +73,33 @@ const getEmpPayComponents = async (req, res) => {
         Amount: item.paycompvalue,
       };
     });
-
-
-    const imgPath = path.join(__dirname, 'images', `${userId}.jpg`);
-    const imageBase64 = fs.existsSync(imgPath)
-      ? fs.readFileSync(imgPath, { encoding: 'base64' })
-      : null;
-    
-    // console.log(comps)
-   
-    const customFormatted = formatSAPDateCustom(UserData.data.d.results[0].hireDate);
+    const customFormatted = formatSAPDateCustom(User.hireDate || "");
 
     let response = {
-      userId: UserData.data.d.results[0].userId,
-      name: UserData.data.d.results[0].displayName,
-      salutation: UserData.data.d.results[0].salutation,
-      designation: UserData.data.d.results[0].title,
-      custom04 : UserData.data.d.results[0].custom04,
-      image: imageBase64,
-      date: customFormatted,
-      company1: UserData.data.d.results[0].custom05,
-      company2: UserData.data.d.results[0].location,
+      userId: User?.userId || "",
+      name: User?.displayName || "",
+      salutation: User?.salutation || "",
+      designation: User?.title || "",
+      custom04: User?.custom04 || "",
+      image: "",
+      date: customFormatted || "",
+      company1: User?.custom05 || "",
+      company2: User?.location || "",
       hrSignature: "",
       address: "",
-      payComponent : comps
+      payComponent: comps || []
+    };
 
-    }
-    res.status(200).json(comps);
-    // res.status(200).json(response.data.d.results);
+    res.status(200).json(response);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
 module.exports = {
-  setAxios,
   getFOPayComponents,
   getBase,
   getCompanies,
   getEmpPayComponents,
   getUser,
-  
 };

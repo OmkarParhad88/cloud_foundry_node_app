@@ -1,13 +1,12 @@
 const express = require("express");
-const router = express.Router();
+const SFRoutes = express.Router();
 const SFController = require("../controllers/SF.controller");
 
-router.get("/paycomponent", SFController.getFOPayComponents);
-router.get("/", SFController.getBase);
-router.get("/user", SFController.getUser);
-router.get("/companies", SFController.getCompanies);
-router.get("/emppaycomponents", SFController.getEmpPayComponents);
-
-
-module.exports = { router, setAxios: SFController.setAxios };
+SFRoutes.get("/paycomponent", SFController.getFOPayComponents);
+SFRoutes.get("/", SFController.getBase);
+SFRoutes.get("/user", SFController.getUser);
+SFRoutes.get("/companies", SFController.getCompanies);
+SFRoutes.get("/emppaycomponents", SFController.getEmpPayComponents);
+ 
+module.exports =  SFRoutes;
 
