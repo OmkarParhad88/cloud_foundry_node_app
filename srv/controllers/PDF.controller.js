@@ -1,6 +1,6 @@
 const Sf_Api = require("../apis/Sf_Api");
 const Adobe_Api = require("../apis/Adobe_Api");
-const { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress } = require("../utils/utils");
+const { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate } = require("../utils/utils");
 
 const headers_footers = require("../assets/ctc_headers_footers.json");
 
@@ -127,11 +127,12 @@ const getEmpPayComponents = async (req, res) => {
         Amount: item.payCompValue,
       };
     });
-
+    const currentData = await getCurrentFormattedDate();
     //EmpPayCompNonRecurring
 
     let response = {
       userId: User?.userId || "",
+      currentData : currentData,
       name: name,
       designation: User?.title || "",
       company: company,

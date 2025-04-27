@@ -79,4 +79,13 @@ function getCompanyAddress(companies, companyName) {
   return company.footer_text;
 }
 
-module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress };  
+function getCurrentFormattedDate() {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.toLocaleString('en-US', { month: 'long' });
+  const year = today.getFullYear();
+  return `${day} ${month}, ${year}`;
+}
+
+
+module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress , getCurrentFormattedDate };  
