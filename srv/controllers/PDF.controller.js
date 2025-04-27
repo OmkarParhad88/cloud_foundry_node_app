@@ -1,6 +1,6 @@
 const Sf_Api = require("../apis/Sf_Api");
 const Adobe_Api = require("../apis/Adobe_Api");
-const { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName } = require("../utils/utils");
+const { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress } = require("../utils/utils");
 
 const headers_footers = require("../assets/ctc_headers_footers.json");
 
@@ -102,22 +102,19 @@ const getEmpPayComponents = async (req, res) => {
     const EmpPayCompsRecurring = await Sf_Api.getEmpPayCompRecurringResponse(userId);
     const FOPayComponents = await Sf_Api.getFOPayComponentsResponse();
 
-    var EmpPayComps = EmpPayCompsRecurring.map((item) => ({
-      payComponent: item.payComponent,
-      paycompvalue: item.paycompvalue,
-    }));
+    var EmpPayComps = EmpPayCompsRecurring.filter(item => item.paycompvalue !== "0").map(item => ({
+        payComponent: item.payComponent,
+        payCompValue: item.paycompvalue,
+      }));
 
     var FOPayComps = FOPayComponents.map((item) => ({
       name: item.name,
       externalCode: item.externalCode,
     }));
 
-
-
     const company = removeBrackets(User?.custom04);
-
+    const address = getCompanyAddress(headers_footers, company);
     const fileName = headers_footers.find((item) => item.company_name === company)?.file_name || '';
-
     const formattedDate = formatSAPDateCustom(User?.hireDate);
     const image = await imageToBase64(fileName);
     const name = bindSalutationAndName(User?.salutation, User?.displayName);
@@ -127,7 +124,7 @@ const getEmpPayComponents = async (req, res) => {
       );
       return {
         PayComponent: FOPayComp ? `${FOPayComp.name} (${item.payComponent})` : 'Unknown Component',
-        Amount: item.paycompvalue,
+        Amount: item.payCompValue,
       };
     });
 
@@ -142,7 +139,7 @@ const getEmpPayComponents = async (req, res) => {
       headerImage: "",
       date: formattedDate,
       hrSignature: "",
-      address: "",
+      address: address,
       payComponent: RecurringComps || []
     };
 

@@ -25,7 +25,6 @@ function formatSAPDateCustom(sapDateStr) {
   return `${day} ${month}, ${year}`;
 }
 
-
 const imageToBase64 = async (fileName) => {
   if (!fileName) {
     return "";
@@ -63,10 +62,21 @@ function bindSalutationAndName(salutation, name) {
     ? salutation.charAt(0).toUpperCase() + salutation.slice(1).toLowerCase()
     : '';
 
-  return `${formattedSalutation} ${name}`;
+  return `${formattedSalutation}. ${name}`;
 }
 
+function getCompanyAddress(companies, companyName) {
+  if (!companyName) {
+    return '';
+  }
 
+  const company = companies.find(item => item.company_name === companyName);
 
+  if (!company && company.footer_text.trim() === '') {
+    return '';
+  }
 
-module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName };  
+  return company.footer_text;
+}
+
+module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress };  
