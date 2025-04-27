@@ -1,0 +1,33 @@
+let axios;
+const setAxios = (instance) => {
+  axios = instance;
+};
+
+const getFormsResponse = async () => {
+  try {
+    const response = await axios.get(
+      "/v1/forms?limit=0&offset=0&select=formData"
+    );
+    return response.data;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const getCTCLetterResponse = async (payload) => {
+  try {
+    const response = await axios.post(
+      "/v1/adsRender/pdf?templateSource=storageName&TraceLevel=0",
+      payload,
+      { headers: { "Content-Type": "application/json" } }
+    );
+    const fileBuffer = Buffer.from(response.data.fileContent, "base64");
+    return fileBuffer;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+
+
+module.exports = { setAxios, getFormsResponse, getCTCLetterResponse };

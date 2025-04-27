@@ -71,4 +71,18 @@ const getEmpPayCompNonRecurringResponse = async (userId) => {
   }
 };
 
-module.exports = { setAxios, getBaseResponse, getFOPayComponentsResponse, getUserResponse, getCompaniesResponse, getEmpPayCompRecurringResponse, getEmpPayCompNonRecurringResponse };
+const getEmpOrgResponse = async (userId) => {
+  try {
+    const url = `/odata/v2/FOCompany?$format=json&$filter=userId eq '${userId}'`;
+
+    const EmpOrganization  = await axios.get(url);
+    return EmpOrganization.data;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+
+// /odata/v2/FOCompany?$filter = userid eq '103747'
+
+module.exports = { setAxios, getBaseResponse, getFOPayComponentsResponse, getUserResponse, getCompaniesResponse, getEmpPayCompRecurringResponse, getEmpPayCompNonRecurringResponse, getEmpOrgResponse };

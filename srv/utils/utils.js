@@ -3,7 +3,7 @@ const path = require('path');
 
 function formatSAPDateCustom(sapDateStr) {
   if (!sapDateStr) {
-    return ""; 
+    return "";
   }
 
   const match = sapDateStr.match(/\/Date\((\d+)\)\//);
@@ -13,7 +13,7 @@ function formatSAPDateCustom(sapDateStr) {
 
   const timestamp = parseInt(match[1]);
   if (isNaN(timestamp)) {
-    return ""; 
+    return "";
   }
 
   const date = new Date(timestamp);
@@ -26,15 +26,15 @@ function formatSAPDateCustom(sapDateStr) {
 }
 
 
-const imageToBase64 = (imagePath) => {
-  if (!imagePath) {
-    return ""; // return empty string if input is null, undefined or empty
-  }
+const imageToBase64 = async (fileName) => {
+  if (!fileName) {
+    return "";
+  } // Should print the current script's directory
 
-  const imgFullPath = path.join(__dirname, 'images', `${imagePath}.jpg`);
+  const imgFullPath = path.resolve(__dirname, '../assets/images/headers_images', `${fileName}.png`);
 
   if (!fs.existsSync(imgFullPath)) {
-    return ""; // if file does not exist, return empty string
+    return "";
   }
 
   try {
@@ -42,10 +42,31 @@ const imageToBase64 = (imagePath) => {
     return imageBase64;
   } catch (err) {
     console.error("Error reading image:", err);
-    return ""; // in case reading file fails
+    return "";
   }
 };
 
+function removeBrackets(text) {
+  if (!text) {
+    return '';
+  }
+
+  return text.replace(/\s*\(.*?\)\s*/g, '').trim();
+}
+
+function bindSalutationAndName(salutation, name) {
+  if (!name) return '';
+
+  if (!salutation) return name;
+
+  const formattedSalutation = salutation
+    ? salutation.charAt(0).toUpperCase() + salutation.slice(1).toLowerCase()
+    : '';
+
+  return `${formattedSalutation} ${name}`;
+}
 
 
-module.exports = { formatSAPDateCustom, imageToBase64 };
+
+
+module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName };  
