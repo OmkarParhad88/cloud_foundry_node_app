@@ -5,7 +5,7 @@
   
   "scripts": {
     "start": "node server.cjs",
-    "devStart": "nodemon server.cjs"
+    "devstart": "nodemon server.cjs"
   },
   "author": "",
   "license": "ISC",

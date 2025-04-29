@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const payCompSRNo = require('../assets/payCompSRNO.json');
 
 function formatSAPDateCustom(sapDateStr) {
   if (!sapDateStr) {
@@ -86,6 +87,46 @@ function getCurrentFormattedDate() {
   const year = today.getFullYear();
   return `${day} ${month}, ${year}`;
 }
+function getPayCompById(EmpPayCompsRecurring, FOPayComponents) {
+
+  var EmpPayComps = EmpPayCompsRecurring.filter(item => item.paycompvalue !== "0").map(item => ({
+    payComponent: item.payComponent,
+    payCompValue: item.paycompvalue,
+  }));
+
+  var FOPayComps = FOPayComponents.map((item) => ({
+    name: item.name,
+    externalCode: item.externalCode,
+  }));
+
+  const matched = payCompSRNo
+    .map(id => EmpPayComps.find(item => item.payComponent === id))
+    .filter(Boolean); // remove nulls if any ID not found
+
+  // Step 3: Get unmatched items
+  const unmatched = EmpPayComps.filter(
+    item => !payCompSRNo.includes(item.payComponent)
+  );
+
+  // Step 4: Final ordered array
+  const orderedEmpPayComps = [...matched, ...unmatched];
+
+  // FOPayComps = FOPayComps.concat(newFoPayComps);
 
 
-module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress , getCurrentFormattedDate };  
+  const RecurringComps = orderedEmpPayComps.map((item) => {
+
+
+    const FOPayComp = FOPayComps.find(
+      (elm) => elm.externalCode === item.payComponent
+    );
+    return {
+      PayComponent: FOPayComp ? `${FOPayComp.name} (${item.payComponent})` : 'Unknown Component',
+      Amount: item.payCompValue,
+    };
+  });
+  return  reversedPayCompSRNo = [...RecurringComps].reverse();
+}
+
+
+module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompById };  
