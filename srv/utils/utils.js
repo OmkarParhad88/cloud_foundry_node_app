@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const xml2js = require('xml2js');
 const payCompSRNo = require('../assets/payCompSRNO.json');
+const e = require('express');
+const ctc_xml = fs.readFileSync(path.resolve(__dirname, '../assets/Salary_certificate.xml'), 'utf-8');
 
 function formatSAPDateCustom(sapDateStr) {
   if (!sapDateStr) {
@@ -101,18 +104,13 @@ function getPayCompById(EmpPayCompsRecurring, FOPayComponents) {
 
   const matched = payCompSRNo
     .map(id => EmpPayComps.find(item => item.payComponent === id))
-    .filter(Boolean); // remove nulls if any ID not found
+    .filter(Boolean);
 
-  // Step 3: Get unmatched items
   const unmatched = EmpPayComps.filter(
     item => !payCompSRNo.includes(item.payComponent)
   );
 
-  // Step 4: Final ordered array
   const orderedEmpPayComps = [...matched, ...unmatched];
-
-  // FOPayComps = FOPayComps.concat(newFoPayComps);
-
 
   const RecurringComps = orderedEmpPayComps.map((item) => {
 
@@ -125,8 +123,40 @@ function getPayCompById(EmpPayCompsRecurring, FOPayComponents) {
       Amount: item.payCompValue,
     };
   });
-  return  reversedPayCompSRNo = [...RecurringComps].reverse();
+  return reversedPayCompSRNo = [...RecurringComps].reverse();
+}
+
+function mapPayComp(data) {
+  return data.map(item => ({
+    LGTXT: [item.PayComponent],
+    BETRG: [item.Amount]
+  }));
 }
 
 
-module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompById };  
+async function  getCTC_letter_XML  (empData) {
+  const parser = new xml2js.Parser({ explicitArray: true });
+  const builder = new xml2js.Builder();
+  let updatedXML;
+
+  parser.parseString(ctc_xml, (err, result) => {
+    if (err) throw err;
+
+    result.data.EMP_CODE[0] = empData.userId;
+    result.data.EMP_NAME[0] = empData.name;
+    result.data.EMP_DESIG[0] = empData.designation;
+    result.data.JOIN_DATE[0] = empData.joiningDate;
+    result.data.SYSTEMDATE[0] = getCurrentFormattedDate();
+    // result.data.FAX_TEXT[0] = empData.company;
+    result.data.COMPANY_NAME[0] = empData.company;
+    result.data.ADDRESS1[0] = empData.address;
+    result.data.COMP_LOGO[0] = empData.headerImage;
+    result.data.SIGN_NAME[0] = "Ramu Gajula";
+    result.data.SIGN_LOGO[0] = empData.hrSignature;
+    result.data.PAY_COMP[0].DATA = mapPayComp(empData.payComponent).reverse();
+     updatedXML =  builder.buildObject(result);
+  });
+  return updatedXML;
+}
+
+module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompById, getCTC_letter_XML };  

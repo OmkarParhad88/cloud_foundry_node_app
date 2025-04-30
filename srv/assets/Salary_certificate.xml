@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+   <SFPSY>
+      <DATE/>
+      <TIME/>
+      <USERNAME/>
+      <SUBRC/>
+   </SFPSY>
+   <GV_DATE/>
+   <GV_TEXT1/>
+   <GV_TEXT2/>
+   <GV_TEXT3/>
+   <GV_TEXT4/>
+   <EMP_CODE>Mirum est</EMP_CODE>
+   <GV_COMPANY>Si manu vacuas</GV_COMPANY>
+   <GV_NAME/>
+   <GV_DESIG/>
+   <SYSTEMDATE/>
+   <EMP_NAME>Ego ille</EMP_NAME>
+   <JOIN_DATE>Si manu vacuas</JOIN_DATE>
+   <EMP_DESIG>Apros tres et quidem</EMP_DESIG>
+   <COMPANY_NAME/>
+   <SIGN_NAME>Apros tres et quidem</SIGN_NAME>
+   <ADDRESS1>Ad retia sedebam</ADDRESS1>
+   <ADDRESS2>Mirum est</ADDRESS2>
+   <ADDRESS3>Vale</ADDRESS3>
+   <ADDRESS4>Ego ille</ADDRESS4>
+   <PHONE_TEXT>Licebit auctore</PHONE_TEXT>
+   <FAX_TEXT>Si manu vacuas</FAX_TEXT>
+   <EMAIL_TEXT>Proinde</EMAIL_TEXT>
+   <WEB_TEXT>Apros tres et quidem</WEB_TEXT>
+   <CIN_TEXT>Am undique</CIN_TEXT>
+   <SIGN_LOGO/>
+   <GRAPHIC/>
+   <COMP_LOGO/>
+   <GRAPHIC1/>
+   <PAY_COMP>
+      <DATA>
+         <LGTXT>Licebit auctore</LGTXT>
+         <BETRG>Proinde</BETRG>
+      </DATA>
+      <DATA>
+         <LGTXT>Am undique</LGTXT>
+         <BETRG>Ad retia sedebam</BETRG>
+      </DATA>
+      <DATA>
+         <LGTXT>Vale</LGTXT>
+         <BETRG>Ego ille</BETRG>
+      </DATA>
+   </PAY_COMP>
+</data>

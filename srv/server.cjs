@@ -16,23 +16,23 @@ app.listen(PORT, async () => {
 
     // local testing
 
-    // // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
-    // const SF_axios = await BasicAuthAxios("SF");        // qae
-    // // const SF_axios = await BasicAuthAxios("SF_PRD");  // prd
-    // Sf_Api.setAxios(SF_axios);
-
-    // // const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
-    // // Adobe_Api.setAxios(Adobe_axios);
-
-
-    //  production
-
     // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
     const SF_axios = await BasicAuthAxios("SF");        // qae
+    // const SF_axios = await BasicAuthAxios("SF_PRD");  // prd
     Sf_Api.setAxios(SF_axios);
 
     const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
     Adobe_Api.setAxios(Adobe_axios);
+
+
+    //  production
+
+    // // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
+    // const SF_axios = await BasicAuthAxios("SF");        // qae
+    // Sf_Api.setAxios(SF_axios);
+
+    // const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
+    // Adobe_Api.setAxios(Adobe_axios);
 
     console.log(`Server running on port : http://localhost:${PORT}/`);
 });

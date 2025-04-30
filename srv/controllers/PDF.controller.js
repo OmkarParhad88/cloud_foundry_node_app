@@ -1,6 +1,6 @@
 const Sf_Api = require("../apis/Sf_Api");
 const Adobe_Api = require("../apis/Adobe_Api");
-const { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompById } = require("../utils/utils");
+const utils = require("../utils/utils");
 
 const headers_footers = require("../assets/ctc_headers_footers.json");
 
@@ -9,24 +9,65 @@ const headers_footers = require("../assets/ctc_headers_footers.json");
 const getCTCLetter = async (req, res) => {
   try {
     const xmlData = `<?xml version="1.0" encoding="UTF-8"?>
-                    <form1>
-                        <LabelForm>
-                            <DeliveryId>3433</DeliveryId>
-                            <Position>omkar</Position>
-                            <MaterialNo>parhad</MaterialNo>
-                            <Quantity>sap consultant </Quantity>
-                            <Package>java script</Package>
-                        </LabelForm>
-                    </form1>`;
-
-    const xmlBase64 = Buffer.from(xmlData).toString("base64");
+                        <data>
+                          <SFPSY>
+                              <DATE/>
+                              <TIME/>
+                              <USERNAME/>
+                              <SUBRC/>
+                          </SFPSY>
+                          <GV_DATE/>
+                          <GV_TEXT1/>
+                          <GV_TEXT2/>
+                          <GV_TEXT3/>
+                          <GV_TEXT4/>
+                          <EMP_CODE>Mirum est</EMP_CODE>
+                          <GV_COMPANY>Si manu vacuas</GV_COMPANY>
+                          <GV_NAME/>
+                          <GV_DESIG/>
+                          <SYSTEMDATE/>
+                          <EMP_NAME>Ego ille</EMP_NAME>
+                          <JOIN_DATE>Si manu vacuas</JOIN_DATE>
+                          <EMP_DESIG>Apros tres et quidem</EMP_DESIG>
+                          <COMPANY_NAME/>
+                          <SIGN_NAME>Apros tres et quidem</SIGN_NAME>
+                          <ADDRESS1>Ad retia sedebam</ADDRESS1>
+                          <ADDRESS2>Mirum est</ADDRESS2>
+                          <ADDRESS3>Vale</ADDRESS3>
+                          <ADDRESS4>Ego ille</ADDRESS4>
+                          <PHONE_TEXT>Licebit auctore</PHONE_TEXT>
+                          <FAX_TEXT>Si manu vacuas</FAX_TEXT>
+                          <EMAIL_TEXT>Proinde</EMAIL_TEXT>
+                          <WEB_TEXT>Apros tres et quidem</WEB_TEXT>
+                          <CIN_TEXT>Am undique</CIN_TEXT>
+                          <SIGN_LOGO/>
+                          <GRAPHIC/>
+                          <COMP_LOGO/>
+                          <GRAPHIC1/>
+                          <PAY_COMP>
+                              <DATA>
+                                <LGTXT>Licebit auctore</LGTXT>
+                                <BETRG>Proinde</BETRG>
+                              </DATA>
+                              <DATA>
+                                <LGTXT>Am undique</LGTXT>
+                                <BETRG>Ad retia sedebam</BETRG>
+                              </DATA>
+                              <DATA>
+                                <LGTXT>Vale</LGTXT>
+                                <BETRG>Ego ille</BETRG>
+                              </DATA>
+                          </PAY_COMP>
+                        </data>`;
+    const ctc_xml = await utils.getCTC_letter_XML();
+    const xmlBase64 = Buffer.from(ctc_xml).toString("base64");
 
     const payload = {
       embedFont: 0,
       formLocale: "en_US",
       formType: "print",
       taggedPdf: 1,
-      xdpTemplate: "ctc_letter/trial",
+      xdpTemplate: "ctc_letter/ctc_letter_tmp",
       xmlData: xmlBase64,
     };
 
@@ -43,8 +84,8 @@ const getCTCLetter = async (req, res) => {
 
 const getForms = async (req, res) => {
   try {
-    const Forms = await Adobe_Api.getFormsResponse();
-    res.status(200).json(Forms);
+    const Form = await Adobe_Api.getFormsResponse();
+    res.status(200).json(Form);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -102,52 +143,57 @@ const getEmpPayComponents = async (req, res) => {
     const EmpPayCompsRecurring = await Sf_Api.getEmpPayCompRecurringResponse(userId);
     const FOPayComponents = await Sf_Api.getFOPayComponentsResponse();
 
-    const RecurringComps =  getPayCompById(EmpPayCompsRecurring,FOPayComponents);
+    const RecurringComps = utils.getPayCompById(EmpPayCompsRecurring, FOPayComponents);
 
-    // var EmpPayComps = EmpPayCompsRecurring.filter(item => item.paycompvalue !== "0").map(item => ({
-    //     payComponent: item.payComponent,
-    //     payCompValue: item.paycompvalue,
-    //   }));
-
-    // var FOPayComps = FOPayComponents.map((item) => ({
-    //   name: item.name,
-    //   externalCode: item.externalCode,
-    // }));
-
-    const company = removeBrackets(User?.custom04);
-    const address = getCompanyAddress(headers_footers, company);
+    const company = utils.removeBrackets(User?.custom04);
+    const address = utils.getCompanyAddress(headers_footers, company);
     const fileName = headers_footers.find((item) => item.company_name === company)?.file_name || '';
-    const formattedDate = formatSAPDateCustom(User?.hireDate);
-    const image = await imageToBase64(fileName);
-    const name = bindSalutationAndName(User?.salutation, User?.displayName);
-    // const RecurringComps = EmpPayComps.map((item) => {
-    //   const FOPayComp = FOPayComps.find(
-    //     (elm) => elm.externalCode === item.payComponent
-    //   );
-    //   return {
-    //     PayComponent: FOPayComp ? `${FOPayComp.name} (${item.payComponent})` : 'Unknown Component',
-    //     Amount: item.payCompValue,
-    //   };
-    // });
-    const currentData = await getCurrentFormattedDate();
+    const formattedDate = utils.formatSAPDateCustom(User?.hireDate);
+    const CompanyLogo = await utils.imageToBase64(fileName);
+    const name = utils.bindSalutationAndName(User?.salutation, User?.displayName);
 
     let response = {
       userId: User?.userId || "",
-      currentData : currentData,
       name: name,
       designation: User?.title || "",
       company: company,
       fileName: fileName,
-      headerImage: "",
-      date: formattedDate,
-      hrSignature: "",
+      headerImage: CompanyLogo,
+      joiningDate: formattedDate,
+      hrSignature: "grrgffrg",
       address: address,
       payComponent: RecurringComps || []
     };
+    // res.status(200).json(response);
+    const ctc_xml = await utils.getCTC_letter_XML(response);
 
-    res.status(200).json(response);
+    const xmlBase64 = Buffer.from(ctc_xml).toString("base64");
+
+    const payload = {
+      embedFont: 0,
+      formLocale: "en_US",
+      formType: "print",
+      taggedPdf: 1,
+      xdpTemplate: "ctc_letter/ctc_letter_tmp",
+      xmlData: xmlBase64,
+    };
+
+    const fileBuffer = await Adobe_Api.getCTCLetterResponse(payload);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "inline; ctc_letter.pdf");
+
+    res.send(fileBuffer);
+
+
+
+
+
+    // console.log(ctc_xml)
+    // res.setHeader("Content-Type", "application/xml");
+    // res.status(200).send(ctc_xml);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err });
   }
 };
 

@@ -10,7 +10,7 @@ const getFormsResponse = async () => {
     );
     return response.data;
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
@@ -24,7 +24,7 @@ const getCTCLetterResponse = async (payload) => {
     const fileBuffer = Buffer.from(response.data.fileContent, "base64");
     return fileBuffer;
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 };
 
