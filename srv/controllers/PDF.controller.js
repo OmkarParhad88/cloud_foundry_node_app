@@ -137,19 +137,20 @@ const getCompanies = async (req, res) => {
 };
 const getEmpPayComponents = async (req, res) => {
   try {
-    const userId = req.query.userid?.trim();
+    const userId = req.body.userid
 
     const User = await Sf_Api.getUserResponse(userId);
     const EmpPayCompsRecurring = await Sf_Api.getEmpPayCompRecurringResponse(userId);
     const FOPayComponents = await Sf_Api.getFOPayComponentsResponse();
 
-    const RecurringComps = utils.getPayCompById(EmpPayCompsRecurring, FOPayComponents);
+    const RecurringComps = utils.getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents);
 
-    const company = utils.removeBrackets(User?.custom04);
+    const company = utils.geEmpCompanyName(User?.custom04);
     const address = utils.getCompanyAddress(headers_footers, company);
     const fileName = headers_footers.find((item) => item.company_name === company)?.file_name || '';
     const formattedDate = utils.formatSAPDateCustom(User?.hireDate);
-    const CompanyLogo = await utils.imageToBase64(fileName);
+    const CompanyLogo = await utils.imageToBase64PNG(fileName ,"headers_images");
+    const signature = await utils.imageToBase64PNG("signature" ,"signature_images");
     const name = utils.bindSalutationAndName(User?.salutation, User?.displayName);
 
     let response = {
@@ -160,11 +161,10 @@ const getEmpPayComponents = async (req, res) => {
       fileName: fileName,
       headerImage: CompanyLogo,
       joiningDate: formattedDate,
-      hrSignature: "grrgffrg",
+      signature: signature,
       address: address,
       payComponent: RecurringComps || []
     };
-    // res.status(200).json(response);
     const ctc_xml = await utils.getCTC_letter_XML(response);
 
     const xmlBase64 = Buffer.from(ctc_xml).toString("base64");
@@ -182,22 +182,11 @@ const getEmpPayComponents = async (req, res) => {
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", "inline; ctc_letter.pdf");
-
     res.send(fileBuffer);
-
-
-
-
-
-    // console.log(ctc_xml)
-    // res.setHeader("Content-Type", "application/xml");
-    // res.status(200).send(ctc_xml);
   } catch (err) {
     res.status(500).json({ error: err });
   }
 };
-
-
 
 module.exports = {
   getFOPayComponents,

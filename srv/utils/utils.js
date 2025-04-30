@@ -29,12 +29,12 @@ function formatSAPDateCustom(sapDateStr) {
   return `${day} ${month}, ${year}`;
 }
 
-const imageToBase64 = async (fileName) => {
+const imageToBase64PNG = async (fileName,folder) => {
   if (!fileName) {
     return "";
-  } // Should print the current script's directory
+  } 
 
-  const imgFullPath = path.resolve(__dirname, '../assets/images/headers_images', `${fileName}.png`);
+  const imgFullPath = path.resolve(__dirname, `../assets/images/${folder}`, `${fileName}.png`);
 
   if (!fs.existsSync(imgFullPath)) {
     return "";
@@ -49,7 +49,7 @@ const imageToBase64 = async (fileName) => {
   }
 };
 
-function removeBrackets(text) {
+function geEmpCompanyName(text) {
   if (!text) {
     return '';
   }
@@ -90,7 +90,7 @@ function getCurrentFormattedDate() {
   const year = today.getFullYear();
   return `${day} ${month}, ${year}`;
 }
-function getPayCompById(EmpPayCompsRecurring, FOPayComponents) {
+function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
 
   var EmpPayComps = EmpPayCompsRecurring.filter(item => item.paycompvalue !== "0").map(item => ({
     payComponent: item.payComponent,
@@ -123,7 +123,7 @@ function getPayCompById(EmpPayCompsRecurring, FOPayComponents) {
       Amount: item.payCompValue,
     };
   });
-  return reversedPayCompSRNo = [...RecurringComps].reverse();
+  return reversedPayCompSRNo = [...RecurringComps];
 }
 
 function mapPayComp(data) {
@@ -147,16 +147,15 @@ async function  getCTC_letter_XML  (empData) {
     result.data.EMP_DESIG[0] = empData.designation;
     result.data.JOIN_DATE[0] = empData.joiningDate;
     result.data.SYSTEMDATE[0] = getCurrentFormattedDate();
-    // result.data.FAX_TEXT[0] = empData.company;
     result.data.COMPANY_NAME[0] = empData.company;
     result.data.ADDRESS1[0] = empData.address;
     result.data.COMP_LOGO[0] = empData.headerImage;
     result.data.SIGN_NAME[0] = "Ramu Gajula";
-    result.data.SIGN_LOGO[0] = empData.hrSignature;
-    result.data.PAY_COMP[0].DATA = mapPayComp(empData.payComponent).reverse();
+    result.data.SIGN_LOGO[0] = empData.signature;
+    result.data.PAY_COMP[0].DATA = mapPayComp(empData.payComponent);
      updatedXML =  builder.buildObject(result);
   });
   return updatedXML;
 }
 
-module.exports = { formatSAPDateCustom, imageToBase64, removeBrackets, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompById, getCTC_letter_XML };  
+module.exports = { formatSAPDateCustom, imageToBase64PNG, geEmpCompanyName, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompByCompId, getCTC_letter_XML };  

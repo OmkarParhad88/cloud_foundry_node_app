@@ -6,8 +6,8 @@ PDFRoutes.get("/paycomponent", PDFController.getFOPayComponents);
 PDFRoutes.get("/", PDFController.getBase);
 PDFRoutes.get("/user", PDFController.getUser);
 PDFRoutes.get("/companies", PDFController.getCompanies);
-PDFRoutes.get("/emppaycomponents", PDFController.getEmpPayComponents);
-PDFRoutes.get("/ctcletter", PDFController.getCTCLetter);
+// PDFRoutes.get("/emppaycomponents", PDFController.getEmpPayComponents);
+PDFRoutes.post("/ctcletter", PDFController.getEmpPayComponents);
 PDFRoutes.get("/forms", PDFController.getForms);
  
 module.exports =  PDFRoutes;

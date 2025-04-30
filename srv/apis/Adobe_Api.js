@@ -28,6 +28,4 @@ const getCTCLetterResponse = async (payload) => {
   }
 };
 
-
-
 module.exports = { setAxios, getFormsResponse, getCTCLetterResponse };
