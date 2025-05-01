@@ -1,11 +1,21 @@
 {
-    "xsappname": "ctc-srv-xsapp",
-    "tenant-mode": "dedicated",
-    "description": "XSUAA config for CTC_srv app",
-    "oauth2-configuration": {
-      "grant-types": [
-        "client_credentials"
+  "xsappname": "ctc-srv-xsapp",  
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Display",
+      "description": "Read access"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Viewer",
+      "description": "Role to view content",
+      "scope-references": [
+        "$XSAPPNAME.Display"
       ]
     }
+  ]
 }
+
   

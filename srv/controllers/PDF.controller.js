@@ -184,7 +184,11 @@ const getEmpPayComponents = async (req, res) => {
     res.setHeader("Content-Disposition", "inline; ctc_letter.pdf");
     res.send(fileBuffer);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({
+      error: true,
+      message: "Internal Server Error",
+      details: err.message || err.toString()
+    })
   }
 };
 
