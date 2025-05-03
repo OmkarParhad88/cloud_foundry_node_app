@@ -3,7 +3,7 @@ ID: CTC_srv
 description: A simple Node.js application deployed on SAP BTP
 version: 0.0.1
 modules:
-  - name: CTC_srv_srv
+  - name: CTC_srv_srv_new
     type: nodejs
     path: srv
     requires:
@@ -11,9 +11,14 @@ modules:
         parameters:
           service-name: destination-dev 
       - name: ctc_srv-xsuaa
+    parameters:
+      memory: 128M
+      disk-quota: 512M
+      routes:
+        - route: ctc-srv-app.${default-domain}
     build-parameters:
       builder: npm
- 
+      
 resources:
   - name: destination-dev 
     type: org.cloudfoundry.managed-service

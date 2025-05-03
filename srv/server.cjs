@@ -5,24 +5,44 @@ const { BasicAuthAxios, OAuth2Axios } = require("./config/destinations.config")
 const  PDFRoutes = require("./routes/PDF.routes");
 const  Sf_Api  = require("./apis/Sf_Api");
 const Adobe_Api = require("./apis/Adobe_Api");
-
+const fs = require("fs");
 const passport = require('passport');
-const { JWTStrategy } = require('@sap/xssec');
 const xsenv = require('@sap/xsenv');
+const { JWTStrategy } = require("@sap/xssec").v3;
 
 const app = express();
 const PORT = 8080;
 
-xsenv.loadEnv();
-const services = xsenv.getServices({ xsuaa: { tag: 'xsuaa' } });
+let services;
+if (process.env.VCAP_SERVICES) {
+   services = xsenv.getServices({ uaa: 'ctc_srv-xsuaa' });
+} else {
+    const envData = JSON.parse(fs.readFileSync("./default-env.json", "utf8"));
+ services =  { uaa: envData.VCAP_SERVICES.xsuaa[0].credentials };
+}
 
-passport.use(new JWTStrategy(services.xsuaa));
+passport.use(new JWTStrategy(services.uaa));
 
+app.use(express.json());
 app.use(passport.initialize());
-app.use(passport.authenticate('JWT', { session: false })); 
 
-// app.use(express.json());
-app.use("/", PDFRoutes);
+app.use("/ctcletter",passport.authenticate("JWT", { session: false }), PDFRoutes);
+app.use("/", (req, res) => {
+    try {
+      res.status(200).json({ message: "Welcome to CTC Letter API" });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+
+app.use((err, req, res, next) => {
+    if (err.name === "UnauthorizedError") {
+      return res.status(401).json({ error: "Unauthorized - Invalid or missing token" });
+    }
+    next(err);
+  });
+
 
 app.listen(PORT, async () => {
 
