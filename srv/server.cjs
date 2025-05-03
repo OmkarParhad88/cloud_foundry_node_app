@@ -15,26 +15,25 @@ const PORT = 8080;
 
 let services;
 if (process.env.VCAP_SERVICES) {
-   services = xsenv.getServices({ uaa: 'ctc_srv-xsuaa' });
+   services = xsenv.getServices({ uaa: 'ctcletter_srv-xsuaa' });
 } else {
     const envData = JSON.parse(fs.readFileSync("./default-env.json", "utf8"));
  services =  { uaa: envData.VCAP_SERVICES.xsuaa[0].credentials };
 }
 
-passport.use(new JWTStrategy(services.uaa));
-
 app.use(express.json());
+
+passport.use(new JWTStrategy(services.uaa));
 app.use(passport.initialize());
 
 app.use("/ctcletter",passport.authenticate("JWT", { session: false }), PDFRoutes);
 app.use("/", (req, res) => {
     try {
-      res.status(200).json({ message: "Welcome to CTC Letter API" });
+      res.status(200).json({ message: "Welcome to CTC Letter API service " });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   });
-
 
 app.use((err, req, res, next) => {
     if (err.name === "UnauthorizedError") {
@@ -43,15 +42,12 @@ app.use((err, req, res, next) => {
     next(err);
   });
 
-
 app.listen(PORT, async () => {
 
     // local testing
-
-    // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
-    const SF_axios = await BasicAuthAxios("SF");        // qae
-    // const SF_axios = await BasicAuthAxios("SF_PRD");  // prd
-    Sf_Api.setAxios(SF_axios);
+    // const SF_axios = await BasicAuthAxios("SF");        // qae
+    // // const SF_axios = await BasicAuthAxios("SF_PRD");  // prd
+    // Sf_Api.setAxios(SF_axios);
 
     // const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
     // Adobe_Api.setAxios(Adobe_axios);
@@ -59,12 +55,12 @@ app.listen(PORT, async () => {
 
     //  production
 
-    // // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
-    // const SF_axios = await BasicAuthAxios("SF");        // qae
-    // Sf_Api.setAxios(SF_axios);
+    // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
+    const SF_axios = await BasicAuthAxios("SF");        // qae
+    Sf_Api.setAxios(SF_axios);
 
-    // const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
-    // Adobe_Api.setAxios(Adobe_axios);
+    const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
+    Adobe_Api.setAxios(Adobe_axios);
 
     console.log(`Server running on port : http://localhost:${PORT}/`);
 });

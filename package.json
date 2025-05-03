@@ -1,5 +1,5 @@
 {
-  "name": "ctc_srv",
+  "name": "ctc_letter_srv",
   "version": "1.0.0",
   "scripts": {
     "start": "node srv/server",
