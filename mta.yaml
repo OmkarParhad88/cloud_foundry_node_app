@@ -8,7 +8,7 @@ modules:
     path: srv
     requires:
       - name: ctcletter_srv-destination-service  
-      - name: ctcletter_srv-xsuaa
+      - name: ctc_srv-xsuaa
     parameters:
       memory: 128M
       disk-quota: 512M
@@ -24,7 +24,7 @@ resources:
       service: destination
       service-plan: lite
 
-  - name: ctcletter_srv-xsuaa
+  - name: ctc_srv-xsuaa
     type: org.cloudfoundry.managed-service
     parameters:
       path: ./xs-security.json

@@ -15,7 +15,7 @@ const PORT = 8080;
 
 let services;
 if (process.env.VCAP_SERVICES) {
-   services = xsenv.getServices({ uaa: 'ctcletter_srv-xsuaa' });
+   services = xsenv.getServices({ uaa: 'ctc_srv-xsuaa' });
 } else {
     const envData = JSON.parse(fs.readFileSync("./default-env.json", "utf8"));
  services =  { uaa: envData.VCAP_SERVICES.xsuaa[0].credentials };
