@@ -152,7 +152,6 @@ const getEmpPayComponents = async (req, res) => {
     const CompanyLogo = await utils.imageToBase64PNG(fileName ,"headers_images");
     const signature = await utils.imageToBase64PNG("signature" ,"signature_images");
     const name = utils.bindSalutationAndName(User?.salutation, User?.displayName);
-
     let response = {
       userId: User?.userId || "",
       name: name,
@@ -183,6 +182,7 @@ const getEmpPayComponents = async (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", "inline; ctc_letter.pdf");
     res.send(fileBuffer);
+    //  res.status(200).json({ data: "data" });
   } catch (err) {
     res.status(500).json({
       error: true,

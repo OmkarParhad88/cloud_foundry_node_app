@@ -9,6 +9,5 @@ PDFRoutes.get("/companies", PDFController.getCompanies);
 PDFRoutes.post("/pdf", PDFController.getEmpPayComponents);
 PDFRoutes.get("/forms", PDFController.getForms);
 
-
 module.exports = PDFRoutes;
 

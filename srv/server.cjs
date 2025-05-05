@@ -46,13 +46,6 @@ app.use("/", (req, res) => {
     }
   });
 
-app.use((err, req, res, next) => {
-    if (err.name === "UnauthorizedError") {
-      return res.status(401).json({ error: "Unauthorized - Invalid or missing token" });
-    }
-    next(err);
-  });
-
 app.listen(PORT, async () => {
 
     // local testing

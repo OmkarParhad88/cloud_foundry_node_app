@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const xml2js = require('xml2js');
-const payCompSRNo = require('../assets/payCompSRNO.json');
+
 const e = require('express');
 const ctc_xml = fs.readFileSync(path.resolve(__dirname, '../assets/Salary_certificate.xml'), 'utf-8');
 
@@ -90,40 +90,93 @@ function getCurrentFormattedDate() {
   const year = today.getFullYear();
   return `${day} ${month}, ${year}`;
 }
+
+// function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
+
+//   var EmpPayComps = EmpPayCompsRecurring.filter(item => item.paycompvalue !== "0").map(item => ({
+//     payComponent: item.payComponent,
+//     payCompValue: item.paycompvalue,
+//   }));
+
+//   var FOPayComps = FOPayComponents.map((item) => ({
+//     name: item.name,
+//     externalCode: item.externalCode,
+//   }));
+
+//   const matched = payCompSRNo
+//     .map(id => EmpPayComps.find(item => item.payComponent === id))
+//     .filter(Boolean);
+
+//   const unmatched = EmpPayComps.filter(
+//     item => !payCompSRNo.includes(item.payComponent)
+//   );
+
+//   const orderedEmpPayComps = [...matched, ...unmatched];
+
+//   const RecurringComps = orderedEmpPayComps.map((item) => {
+
+
+//     const FOPayComp = FOPayComps.find(
+//       (elm) => elm.externalCode === item.payComponent
+//     );
+//     return {
+//       PayComponent: FOPayComp ? `${FOPayComp.name}` : 'Unknown Component',
+//       Amount: item.payCompValue,
+//     };
+//   });
+//   return reversedPayCompSRNo = [...RecurringComps];
+// }
+
+
 function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
+  const payCompSRNo = require('../assets/payCompSRNO.json');
 
   var EmpPayComps = EmpPayCompsRecurring.filter(item => item.paycompvalue !== "0").map(item => ({
-    payComponent: item.payComponent,
-    payCompValue: item.paycompvalue,
+    externalCode: item.payComponent,
+    amount: item.paycompvalue,
   }));
 
   var FOPayComps = FOPayComponents.map((item) => ({
-    name: item.name,
+    compName: item.name,
     externalCode: item.externalCode,
   }));
 
-  const matched = payCompSRNo
-    .map(id => EmpPayComps.find(item => item.payComponent === id))
-    .filter(Boolean);
+  const matched = payCompSRNo.map(comp => EmpPayComps.find(item => item.externalCode === comp.externalCode )).filter(Boolean);
+
+  const matchedComponents = payCompSRNo.map(item => item.externalCode);
 
   const unmatched = EmpPayComps.filter(
-    item => !payCompSRNo.includes(item.payComponent)
+    item => !matchedComponents.includes(item.externalCode)
   );
 
   const orderedEmpPayComps = [...matched, ...unmatched];
 
   const RecurringComps = orderedEmpPayComps.map((item) => {
-
-
     const FOPayComp = FOPayComps.find(
-      (elm) => elm.externalCode === item.payComponent
+      (elm) => elm.externalCode === item.externalCode
     );
     return {
-      PayComponent: FOPayComp ? `${FOPayComp.name} (${item.payComponent})` : 'Unknown Component',
-      Amount: item.payCompValue,
+      PayComponent: FOPayComp ? `${FOPayComp.compName}` : 'Unknown Component',
+      Amount: item.amount,
     };
   });
   return reversedPayCompSRNo = [...RecurringComps];
+}
+
+function getFormattedTimestamp() {
+  const now = new Date();
+
+  const pad = (n) => n.toString().padStart(2, '0');
+
+  const day = pad(now.getDate());
+  const month = pad(now.getMonth() + 1); 
+  const year = now.getFullYear();
+
+  const hours = pad(now.getHours());
+  const minutes = pad(now.getMinutes());
+  const seconds = pad(now.getSeconds());
+
+  return `Generated on ${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
 function mapPayComp(data) {
@@ -132,7 +185,6 @@ function mapPayComp(data) {
     BETRG: [item.Amount]
   }));
 }
-
 
 async function  getCTC_letter_XML  (empData) {
   const parser = new xml2js.Parser({ explicitArray: true });
@@ -148,14 +200,14 @@ async function  getCTC_letter_XML  (empData) {
     result.data.JOIN_DATE[0] = empData.joiningDate;
     result.data.SYSTEMDATE[0] = getCurrentFormattedDate();
     result.data.COMPANY_NAME[0] = empData.company;
-    result.data.ADDRESS1[0] = empData.address;
     result.data.COMP_LOGO[0] = empData.headerImage;
-    result.data.SIGN_NAME[0] = "Ramu Gajula";
+    result.data.SIGN_NAME[0] = "Ramu Gajula \n Authorized Signatory";
     result.data.SIGN_LOGO[0] = empData.signature;
     result.data.PAY_COMP[0].DATA = mapPayComp(empData.payComponent);
+    result.data.ADDRESS1[0] = `${empData.address} \n ${getFormattedTimestamp()}`;
      updatedXML =  builder.buildObject(result);
   });
   return updatedXML;
 }
 
-module.exports = { formatSAPDateCustom, imageToBase64PNG, geEmpCompanyName, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompByCompId, getCTC_letter_XML };  
+module.exports = { formatSAPDateCustom, imageToBase64PNG, geEmpCompanyName, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompByCompId, getCTC_letter_XML ,getFormattedTimestamp};  
