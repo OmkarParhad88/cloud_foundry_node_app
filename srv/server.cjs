@@ -18,15 +18,26 @@ if (process.env.VCAP_SERVICES) {
    services = xsenv.getServices({ uaa: 'ctc_srv-xsuaa' });
 } else {
     const envData = JSON.parse(fs.readFileSync("./default-env.json", "utf8"));
- services =  { uaa: envData.VCAP_SERVICES.xsuaa[0].credentials };
+ services =  { uaa: envData.VCAP_SERVICES.xsuaa[0].ctc_srv_xsuaa};
 }
 
 app.use(express.json());
-
 passport.use(new JWTStrategy(services.uaa));
 app.use(passport.initialize());
 
-app.use("/ctcletter",passport.authenticate("JWT", { session: false }), PDFRoutes);
+app.use("/ctcletter", (req, res, next) => {
+  passport.authenticate('JWT', { session: false }, (err, user, info) => {
+    if (err || !user) {
+      return res.status(401).json({ 
+        error: "Unauthorized access", 
+        message: info?.message || "Invalid or missing token" 
+      });
+    }
+    req.user = user;
+    next();
+  })(req, res, next);
+}, PDFRoutes);
+
 app.use("/", (req, res) => {
     try {
       res.status(200).json({ message: "Welcome to CTC Letter API service " });
