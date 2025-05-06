@@ -2,12 +2,15 @@ const express = require("express");
 const PDFRoutes = express.Router();
 const PDFController = require("../controllers/PDF.controller");
 
-PDFRoutes.get("/paycomponent", PDFController.getFOPayComponents);
 PDFRoutes.get("/", PDFController.getBase);
-PDFRoutes.get("/user", PDFController.getUser);
-PDFRoutes.get("/companies", PDFController.getCompanies);
-PDFRoutes.post("/pdf", PDFController.getEmpPayComponents);
-PDFRoutes.get("/forms", PDFController.getForms);
+PDFRoutes.post("/json", PDFController.getCtcLetterJson);
+PDFRoutes.post("/xml", PDFController.getCtcLetterXML);
+PDFRoutes.post("/pdf", PDFController.getCTCLetterPDF);
+["/json", "/xml", "/pdf"].forEach(route => {
+  PDFRoutes.all(route, (req, res) => {
+    res.status(405).send(`${req.method} method not allowed on ${route}`);
+  });
+});
 
 module.exports = PDFRoutes;
 

@@ -83,6 +83,4 @@ const getEmpOrgResponse = async (userId) => {
 };
 
 
-// /odata/v2/FOCompany?$filter = userid eq '103747'
-
 module.exports = { setAxios, getBaseResponse, getFOPayComponentsResponse, getUserResponse, getCompaniesResponse, getEmpPayCompRecurringResponse, getEmpPayCompNonRecurringResponse, getEmpOrgResponse };
