@@ -55,6 +55,7 @@ function geEmpCompanyName(text) {
     return '';
   }
 
+
   return text.replace(/\s*\(.*?\)\s*/g, '').trim();
 }
 
@@ -77,7 +78,7 @@ function getCompanyAddress(companies, companyName) {
 
   const company = companies.find(item => item.company_name === companyName);
 
-  if (!company && company.footer_text.trim() === '') {
+  if (!company || !company.footer_text || company.footer_text.trim() === '') {
     return '';
   }
 
@@ -97,7 +98,7 @@ function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
 
   var EmpPayComps = EmpPayCompsRecurring.filter(item => item.paycompvalue !== "0").map(item => ({
     externalCode: item.payComponent,
-    amount: item.paycompvalue,
+    amount: Number(item.paycompvalue).toLocaleString('en-IN'),
   }));
 
   var FOPayComps = FOPayComponents.map((item) => ({
@@ -174,11 +175,11 @@ async function getCtcLetterJsonData(userid) {
     company: company,
     fileName: fileName,
     joiningDate: formattedDate,
-    signatureName: "Ramu Gajula \n Authorized Signatory",
+    signatureName: " Ramu Gajula \n Authorized Signatory",
     address: address,
     payComponent: RecurringComps || [],
     generated_on: getFormattedTimestamp(),
-    headerImage: CompanyLogo,
+    headerImage: CompanyLogo, 
     signatureImage: signatureImage,
 
   };
@@ -199,7 +200,7 @@ async function getCTC_letter_XML(empData) {
     result.data.EMP_DESIG[0] = empData.designation;
     result.data.JOIN_DATE[0] = empData.joiningDate;
     result.data.SYSTEMDATE[0] = empData.today;
-    result.data.COMPANY_NAME[0] = empData.company;
+    result.data.COMPANY_NAME[0] = empData.company + ",";
     result.data.COMP_LOGO[0] = empData.headerImage;
     result.data.SIGN_NAME[0] = empData.signatureName;
     result.data.SIGN_LOGO[0] = empData.signatureImage;

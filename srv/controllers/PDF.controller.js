@@ -3,7 +3,6 @@ const utils = require("../utils/utils");
 
 const getBase = async (req, res) => {
 
-
   try {
     res.status(200).json({ "success": "ctc letter base route" });
   } catch (err) {
