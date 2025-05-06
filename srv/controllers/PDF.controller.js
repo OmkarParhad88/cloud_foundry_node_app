@@ -2,6 +2,8 @@ const Adobe_Api = require("../apis/Adobe_Api");
 const utils = require("../utils/utils");
 
 const getBase = async (req, res) => {
+
+
   try {
     res.status(200).json({ "success": "ctc letter base route" });
   } catch (err) {
@@ -11,6 +13,11 @@ const getBase = async (req, res) => {
 
 const getCtcLetterXML = async (req, res) => {
   try {
+
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ error: 'Request body is missing or empty or not json' });
+    }
+
     const userId = req.body.userid
 
     const response = await utils.getCtcLetterJsonData(userId);
@@ -25,6 +32,9 @@ const getCtcLetterXML = async (req, res) => {
 
 const getCtcLetterJson = async (req, res) => {
   try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ error: 'Request body is missing or empty or not json' });
+    }
     const userId = req.body.userid
     const response = await utils.getCtcLetterJsonData(userId);
     res.status(200).json(response);
@@ -40,6 +50,9 @@ const getCtcLetterJson = async (req, res) => {
 
 const getCTCLetterPDF = async (req, res) => {
   try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ error: 'Request body is missing or empty or not json' });
+    }
     const userId = req.body.userid
 
     const response = await utils.getCtcLetterJsonData(userId);

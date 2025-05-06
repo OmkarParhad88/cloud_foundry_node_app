@@ -174,7 +174,7 @@ async function getCtcLetterJsonData(userid) {
     company: company,
     fileName: fileName,
     joiningDate: formattedDate,
-    signatureName: "Ramu Gajula",
+    signatureName: "Ramu Gajula \n Authorized Signatory",
     address: address,
     payComponent: RecurringComps || [],
     generated_on: getFormattedTimestamp(),
@@ -205,6 +205,7 @@ async function getCTC_letter_XML(empData) {
     result.data.SIGN_LOGO[0] = empData.signatureImage;
     result.data.PAY_COMP[0].DATA = mapPayComp(empData.payComponent);
     result.data.ADDRESS1[0] = empData.address;
+    result.data.GENERATED_ON[0] = empData.generated_on;
     updatedXML = builder.buildObject(result);
   });
   return updatedXML;
