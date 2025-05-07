@@ -169,17 +169,16 @@ async function getCtcLetterJsonData(userid) {
   const name = bindSalutationAndName(User?.salutation, User?.displayName);
 
   let response = {
+    generated_on: getFormattedTimestamp(),
+    today: getCurrentFormattedDate(),
+    joiningDate: formattedDate,
     userId: User?.userId || "",
     name: name,
-    today: getCurrentFormattedDate(),
     designation: User?.title || "",
     company: company,
-    fileName: fileName,
-    joiningDate: formattedDate,
     signatureName: "Ramu Gajula \nAuthorized Signatory",
     address: address,
     payComponent: RecurringComps || [],
-    generated_on: getFormattedTimestamp(),
     headerImage: CompanyLogo, 
     signatureImage: signatureImage,
   };

@@ -6,10 +6,10 @@ const PDFRoutes = require("./routes/PDF.routes");
 const Sf_Api = require("./apis/Sf_Api");
 const Adobe_Api = require("./apis/Adobe_Api");
 const fs = require("fs");
-// const getPort = require('get-port');
 const passport = require('passport');
 const xsenv = require('@sap/xsenv');
 const { JWTStrategy } = require("@sap/xssec").v3;
+const PDFController = require("./controllers/PDF.controller");
 
 const app = express();
 
@@ -38,6 +38,8 @@ app.use("/ctcletter", (req, res, next) => {
   })(req, res, next);
 }, PDFRoutes);
 
+app.get("/ctcletter/pdff", PDFController.getCTCLetterPDF);
+
 app.use("/", (req, res) => {
   try {
     res.status(200).json({ message: "Welcome to CTC Letter API service " });
@@ -51,7 +53,7 @@ app.use("/", (req, res) => {
 
   // local testing
   // const SF_axios = await BasicAuthAxios("SF");        // qae
-  // // const SF_axios = await BasicAuthAxios("SF_PRD");  // prd
+  const SF_axios = await BasicAuthAxios("SF_PRD");  // prd
   // Sf_Api.setAxios(SF_axios);
 
   // const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
@@ -60,7 +62,7 @@ app.use("/", (req, res) => {
   //  production
 
   // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
-  const SF_axios = await BasicAuthAxios("SF");        // qae
+  // const SF_axios = await BasicAuthAxios("SF");        // qae
   Sf_Api.setAxios(SF_axios);
 
   const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev

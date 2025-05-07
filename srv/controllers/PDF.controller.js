@@ -49,10 +49,19 @@ const getCtcLetterJson = async (req, res) => {
 
 const getCTCLetterPDF = async (req, res) => {
   try {
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ error: 'Request body is missing or empty or not json' });
+
+    let userId;
+    if (req.query.userid) {
+      userId = req.query.userid;
     }
-    const userId = req.body.userid
+    if (req.body.userid) {
+      userId = req.body.userid;
+    }
+
+    // if (!req.body || Object.keys(req.body).length === 0) {
+    //   return res.status(400).json({ error: 'Request body is missing or empty or not json' });
+    // }
+    
 
     const response = await utils.getCtcLetterJsonData(userId);
     const ctc_xml = await utils.getCTC_letter_XML(response);
