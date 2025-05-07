@@ -67,7 +67,6 @@ function bindSalutationAndName(salutation, name) {
   const formattedSalutation = salutation
     ? salutation.charAt(0).toUpperCase() + salutation.slice(1).toLowerCase()
     : '';
-
   return `${formattedSalutation}. ${name}`;
 }
 
@@ -81,7 +80,6 @@ function getCompanyAddress(companies, companyName) {
   if (!company || !company.footer_text || company.footer_text.trim() === '') {
     return '';
   }
-
   return company.footer_text;
 }
 
@@ -154,9 +152,11 @@ function mapPayComp(data) {
 async function getCtcLetterJsonData(userid) {
   const headers_footers = require("../assets/ctc_headers_footers.json");
 
-  const User = await Sf_Api.getUserResponse(userid);
-  const EmpPayCompsRecurring = await Sf_Api.getEmpPayCompRecurringResponse(userid);
-  const FOPayComponents = await Sf_Api.getFOPayComponentsResponse();
+  const [User, EmpPayCompsRecurring, FOPayComponents] = await Promise.all([
+    Sf_Api.getUserResponse(userid),
+    Sf_Api.getEmpPayCompRecurringResponse(userid),
+    Sf_Api.getFOPayComponentsResponse()
+  ]);
 
   const RecurringComps = getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents);
 
@@ -167,6 +167,7 @@ async function getCtcLetterJsonData(userid) {
   const CompanyLogo = await imageToBase64PNG(fileName, "headers_images");
   const signatureImage = await imageToBase64PNG("signature", "signature_images");
   const name = bindSalutationAndName(User?.salutation, User?.displayName);
+
   let response = {
     userId: User?.userId || "",
     name: name,
@@ -175,16 +176,14 @@ async function getCtcLetterJsonData(userid) {
     company: company,
     fileName: fileName,
     joiningDate: formattedDate,
-    signatureName: " Ramu Gajula \n Authorized Signatory",
+    signatureName: "Ramu Gajula \nAuthorized Signatory",
     address: address,
     payComponent: RecurringComps || [],
     generated_on: getFormattedTimestamp(),
     headerImage: CompanyLogo, 
     signatureImage: signatureImage,
-
   };
   return response;
-
 }
 
 async function getCTC_letter_XML(empData) {

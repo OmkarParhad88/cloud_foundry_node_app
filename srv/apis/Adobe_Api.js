@@ -3,17 +3,6 @@ const setAxios = (instance) => {
   axios = instance;
 };
 
-const getFormsResponse = async () => {
-  try {
-    const response = await axios.get(
-      "/v1/forms?limit=0&offset=0&select=formData"
-    );
-    return response.data;
-  } catch (err) {
-    throw new Error(err);
-  }
-};
-
 const getCTCLetterResponse = async (payload) => {
   try {
     const response = await axios.post(
@@ -28,4 +17,4 @@ const getCTCLetterResponse = async (payload) => {
   }
 };
 
-module.exports = { setAxios, getFormsResponse, getCTCLetterResponse };
+module.exports = { setAxios, getCTCLetterResponse };
