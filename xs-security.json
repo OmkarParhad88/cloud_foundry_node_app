@@ -1,9 +1,9 @@
 {
-  "xsappname": "ctc-srv-xsapp",  
+  "xsappname": "ctc-srv-xsapp",
   "tenant-mode": "dedicated",
-  "oauth2-configuration": {
-    "grant-types": ["client_credentials", "authorization_code"]
-  }
+  "authentication-method": "route",
+  "scopes": [],
+  "role-templates": []
 }
 
   

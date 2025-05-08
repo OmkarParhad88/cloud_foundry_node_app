@@ -12,7 +12,7 @@ const { JWTStrategy } = require("@sap/xssec").v3;
 const PDFController = require("./controllers/PDF.controller");
 
 const app = express();
-
+xsenv.loadEnv();
 let services;
 if (process.env.VCAP_SERVICES) {
   services = xsenv.getServices({ uaa: 'ctc_srv-xsuaa' });
@@ -25,7 +25,7 @@ app.use(express.json());
 passport.use(new JWTStrategy(services.uaa));
 app.use(passport.initialize());
 
-app.use("/ctcletter", (req, res, next) => {
+app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, res, next) => {
   passport.authenticate('JWT', { session: false }, (err, user, info) => {
     if (err || !user) {
       return res.status(401).json({
@@ -38,7 +38,7 @@ app.use("/ctcletter", (req, res, next) => {
   })(req, res, next);
 }, PDFRoutes);
 
-app.get("/pdff", PDFController.getCTCLetterPDF);
+app.get("/pdff", passport.authenticate('JWT', { session: false }), PDFController.getCTCLetterPDF);
 
 app.use("/", (req, res) => {
   try {
@@ -53,7 +53,7 @@ app.use("/", (req, res) => {
 
   // local testing
   // const SF_axios = await BasicAuthAxios("SF");        // qae
-  const SF_axios = await BasicAuthAxios("SF_PRD");  // prd
+  // const SF_axios = await BasicAuthAxios("SF_PRD");  // prd
   // Sf_Api.setAxios(SF_axios);
 
   // const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
@@ -62,7 +62,7 @@ app.use("/", (req, res) => {
   //  production
 
   // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
-  // const SF_axios = await BasicAuthAxios("SF");        // qae
+  const SF_axios = await BasicAuthAxios("SF");        // qae
   Sf_Api.setAxios(SF_axios);
 
   const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
