@@ -12,6 +12,9 @@ const getUserResponse = async (userid) => {
     });
     return UserData.data.d;
   } catch (err) {
+    if (err.response.status === 404) {
+      return null;
+    }
     throw new Error(err.message);
   }
 };

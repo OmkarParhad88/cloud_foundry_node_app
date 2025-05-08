@@ -38,7 +38,7 @@ app.use("/ctcletter", (req, res, next) => {
   })(req, res, next);
 }, PDFRoutes);
 
-app.get("/ctcletter/pdff", PDFController.getCTCLetterPDF);
+app.get("/pdff", PDFController.getCTCLetterPDF);
 
 app.use("/", (req, res) => {
   try {

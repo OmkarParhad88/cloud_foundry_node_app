@@ -158,6 +158,9 @@ async function getCtcLetterJsonData(userid) {
     Sf_Api.getFOPayComponentsResponse()
   ]);
 
+  if (!User) {
+    return null;
+  }
   const RecurringComps = getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents);
 
   const company = geEmpCompanyName(User?.custom04);

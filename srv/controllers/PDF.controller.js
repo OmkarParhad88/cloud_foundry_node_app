@@ -64,6 +64,10 @@ const getCTCLetterPDF = async (req, res) => {
     
 
     const response = await utils.getCtcLetterJsonData(userId);
+
+    if(!response) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     const ctc_xml = await utils.getCTC_letter_XML(response);
     const xmlBase64 = Buffer.from(ctc_xml).toString("base64");
 
