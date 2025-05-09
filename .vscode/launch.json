@@ -10,7 +10,7 @@
       "windows": {
         "runtimeExecutable": "npx.cmd"
       },
-      "runtimeArgs": [ 
+      "runtimeArgs": [
         "fiori",
         "run"
       ],

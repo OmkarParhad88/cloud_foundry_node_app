@@ -51,6 +51,11 @@ const getCTCLetterPDF = async (req, res) => {
   try {
 
     let userId;
+
+    if (req.user) {
+      return res.status(200).json(req.user);
+    }
+
     if (req.query.userid) {
       userId = req.query.userid;
     }

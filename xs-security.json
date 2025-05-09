@@ -1,9 +1,13 @@
 {
   "xsappname": "ctc-srv-xsapp",
   "tenant-mode": "dedicated",
-  "authentication-method": "saml",
-  "scopes": [],
-  "role-templates": []
+  "description": "CTC Letter Service",
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://ctcletter-approuter.cfapps.ap10.hana.ondemand.com/login/callback"
+    ],
+    "token-validity": 7200
+  }
 }
-
+  
   
