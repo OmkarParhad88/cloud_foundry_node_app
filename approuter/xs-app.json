@@ -1,0 +1,11 @@
+{
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/ctcletter/(.*)$",
+      "target": "/ctcletter/$1",
+      "destination": "ctc_letter_dest",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}

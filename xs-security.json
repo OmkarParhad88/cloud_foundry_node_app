@@ -1,7 +1,7 @@
 {
   "xsappname": "ctc-srv-xsapp",
   "tenant-mode": "dedicated",
-  "authentication-method": "route",
+  "authentication-method": "saml",
   "scopes": [],
   "role-templates": []
 }

@@ -3,30 +3,47 @@ ID: CTC_srv
 description: A simple Node.js application deployed on SAP BTP
 version: 0.0.1
 modules:
-  - name: CTC_letter_srv
-    type: nodejs
-    path: srv
-    requires:
-      - name: ctcletter_srv-destination-service  
-      - name: ctc_srv-xsuaa
-    parameters:
-      memory: 128M
-      disk-quota: 512M
-      routes:
-        - route: ctcletter-srv.${default-domain}
-    build-parameters:
-      builder: npm
-      
-resources:
-  - name: ctcletter_srv-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
+ - name: approuter
+   type: approuter.nodejs
+   path: approuter
+   parameters:
+    disk-quota: 256M
+    memory: 256M
+   requires:
+    - name: ctc_srv-xsuaa
+    - name: ctcletter_srv-destination-service
+      group: destinations
+      properties:
+       name: ctc_letter_dest
+       url: ~{srv-url}
+       forwardAuthToken: true
+   properties:
+    srv-url: ${default-url}
 
-  - name: ctc_srv-xsuaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      path: ./xs-security.json
-      service: xsuaa
-      service-plan: application
+ - name: CTC_letter_srv
+   type: nodejs
+   path: srv
+   requires:
+    - name: ctcletter_srv-destination-service
+    - name: ctc_srv-xsuaa
+   parameters:
+    memory: 128M
+    disk-quota: 512M
+    routes:
+     - route: ctcletter-srv.${default-domain}
+   build-parameters:
+    builder: npm
+
+resources:
+ - name: ctcletter_srv-destination-service
+   type: org.cloudfoundry.managed-service
+   parameters:
+    service: destination
+    service-plan: lite
+
+ - name: ctc_srv-xsuaa
+   type: org.cloudfoundry.managed-service
+   parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-plan: application
