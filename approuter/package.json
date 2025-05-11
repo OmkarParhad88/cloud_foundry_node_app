@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "SAP App Router for BTP Application",
   "scripts": {
-    "start": "node node_modules/@sap/approuter/approuter.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@sap/approuter": "^20.3.1"
