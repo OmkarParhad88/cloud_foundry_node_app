@@ -20,7 +20,12 @@ const getCtcLetterXML = async (req, res) => {
     let userId
 
     if (req.user.id) {
-      userId = req.user.id;
+      if (!isNaN(req.user.id)) {
+        userId = req.user.id;
+        
+      } else {
+        return res.status(404).json({ error: 'is not id ' });
+      }
     }
     if (req.query.userid) {
       userId = req.query.userid;
@@ -48,7 +53,12 @@ const getCtcLetterJson = async (req, res) => {
     let userId
 
     if (req.user.id) {
-      userId = req.user.id;
+      if (!isNaN(req.user.id)) {
+        userId = req.user.id;
+        
+      } else {
+        return res.status(404).json({ error: 'is not id ' });
+      }
     }
     if (req.query.userid) {
       userId = req.query.userid;
@@ -79,7 +89,12 @@ const getCTCLetterPDF = async (req, res) => {
     let userId
 
     if (req.user.id) {
-      userId = req.user.id;
+      if (!isNaN(req.user.id)) {
+        userId = req.user.id;
+        
+      } else {
+        return res.status(404).json({ error: 'is not id ' });
+      }
     }
     if (req.query.userid) {
       userId = req.query.userid;
