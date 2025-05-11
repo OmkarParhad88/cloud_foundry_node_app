@@ -1,5 +1,6 @@
 {
   "authenticationMethod": "route",
+  "sessionTimeout": 1,
   "routes": [
     {
       "source": "^/ctcletter/(.*)$",
