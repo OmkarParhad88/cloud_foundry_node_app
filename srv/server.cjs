@@ -38,13 +38,10 @@ app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, re
   })(req, res, next);
 }, PDFRoutes);
 
-app.get("/ctcletter/pdff", passport.authenticate('JWT', { session: false }), PDFController.getCTCLetterPDF);
+// app.get("/ctcletter/pdff", passport.authenticate('JWT', { session: false }), PDFController.getCTCLetterPDF);
 
-app.use("/",passport.authenticate('JWT', { session: false }), (req, res) => {
+app.use("/", (req, res) => {
   try {
-    if (req.user) {
-      return res.status(200).json(req.user);
-    }
     res.status(200).json({ message: "Welcome to CTC Letter API service " });
   } catch (err) {
     res.status(500).json({ error: err.message });

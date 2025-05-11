@@ -13,11 +13,21 @@ const getBase = async (req, res) => {
 const getCtcLetterXML = async (req, res) => {
   try {
 
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ error: 'Request body is missing or empty or not json' });
+    let userId
+
+    if (req.user.id) {
+      userId = req.user.id;
+    }
+    if (req.query.userid) {
+      userId = req.query.userid;
+    }
+    if (req.body.userid) {
+      userId = req.body.userid;
     }
 
-    const userId = req.body.userid
+    if (!userId) {
+      return res.status(404).json({ error: 'User not found' });
+    }
 
     const response = await utils.getCtcLetterJsonData(userId);
     const ctc_xml = await utils.getCTC_letter_XML(response);
@@ -31,10 +41,22 @@ const getCtcLetterXML = async (req, res) => {
 
 const getCtcLetterJson = async (req, res) => {
   try {
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ error: 'Request body is missing or empty or not json' });
+    let userId
+
+    if (req.user.id) {
+      userId = req.user.id;
     }
-    const userId = req.body.userid
+    if (req.query.userid) {
+      userId = req.query.userid;
+    }
+    if (req.body.userid) {
+      userId = req.body.userid;
+    }
+
+    if (!userId) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
     const response = await utils.getCtcLetterJsonData(userId);
     res.status(200).json(response);
   } catch (err) {
@@ -50,12 +72,11 @@ const getCtcLetterJson = async (req, res) => {
 const getCTCLetterPDF = async (req, res) => {
   try {
 
-    let userId;
+    let userId
 
-    if (req.user) {
-      return res.status(200).json(req.user);
+    if (req.user.id) {
+      userId = req.user.id;
     }
-
     if (req.query.userid) {
       userId = req.query.userid;
     }
@@ -63,9 +84,10 @@ const getCTCLetterPDF = async (req, res) => {
       userId = req.body.userid;
     }
 
-    // if (!req.body || Object.keys(req.body).length === 0) {
-    //   return res.status(400).json({ error: 'Request body is missing or empty or not json' });
-    // }
+    if (!userId) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+  
   
     const response = await utils.getCtcLetterJsonData(userId);
     if(!response) {
