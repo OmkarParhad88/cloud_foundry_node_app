@@ -13,7 +13,7 @@ const getCTCLetterResponse = async (payload) => {
     const fileBuffer = Buffer.from(response.data.fileContent, "base64");
     return fileBuffer;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 

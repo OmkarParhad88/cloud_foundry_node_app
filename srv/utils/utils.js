@@ -45,8 +45,7 @@ const imageToBase64PNG = async (fileName, folder) => {
     const imageBase64 = fs.readFileSync(imgFullPath, { encoding: 'base64' });
     return imageBase64;
   } catch (err) {
-    console.error("Error reading image:", err);
-    return "";
+    throw err;
   }
 };
 

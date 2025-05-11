@@ -2,9 +2,13 @@ const Adobe_Api = require("../apis/Adobe_Api");
 const utils = require("../utils/utils");
 
 const getBase = async (req, res) => {
+  let response = {
+    "success": " Welcome in CTC letter base route",
+    "user":req.user
+  }
 
   try {
-    res.status(200).json({ "success": "ctc letter base route" });
+    res.status(200).json(response);
   } catch (err) {
     res.status(500).json({ error: err });
   }
@@ -63,7 +67,7 @@ const getCtcLetterJson = async (req, res) => {
     res.status(500).json({
       error: true,
       message: "Internal Server Error",
-      details: err.message || err.toString()
+      details: err
     })
   }
 };
@@ -114,7 +118,7 @@ const getCTCLetterPDF = async (req, res) => {
     res.status(500).json({
       error: true,
       message: "Internal Server Error",
-      details: err.message || err.toString()
+      details: err
     })
   }
 };

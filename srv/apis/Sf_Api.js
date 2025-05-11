@@ -15,7 +15,7 @@ const getUserResponse = async (userid) => {
     if (err.response.status === 404) {
       return null;
     }
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -27,7 +27,7 @@ const getFOPayComponentsResponse = async () => {
 
     return response.data.d.results;
   } catch (err) {
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -39,7 +39,7 @@ const getEmpPayCompRecurringResponse = async (userId) => {
 
     return EmpPayCompRecurring.data.d.results;
   } catch (err) {
-    throw new Error(err.message);
+    throw err;
   }
 };
 

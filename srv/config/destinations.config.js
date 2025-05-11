@@ -21,7 +21,7 @@ const BasicAuthAxios = async (destinationName) => {
             });
 
         } catch (error) {
-            return error;
+            throw err;
         }
     }
 };
@@ -54,7 +54,7 @@ const OAuth2Axios = async (destinationName) => {
             });
 
         } catch (error) {
-            return error;
+            throw err;
         }
 
     }
