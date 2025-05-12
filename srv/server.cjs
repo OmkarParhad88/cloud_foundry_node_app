@@ -33,12 +33,17 @@ app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, re
         message: info?.message || "Invalid or missing token"
       });
     }
+
+    if (isNaN(user.id)) {
+      return res.status(404).json({
+        id: user.id,
+        error: 'Invalid user ID format'
+      });
+    }
     req.user = user;
     next();
   })(req, res, next);
 }, PDFRoutes);
-
-// app.get("/ctcletter/pdff", passport.authenticate('JWT', { session: false }), PDFController.getCTCLetterPDF);
 
 app.use("/", (req, res) => {
   try {

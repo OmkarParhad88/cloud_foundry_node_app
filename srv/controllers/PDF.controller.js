@@ -4,7 +4,7 @@ const utils = require("../utils/utils");
 const getBase = async (req, res) => {
   let response = {
     "success": " Welcome in CTC letter base route",
-    "user":req.user
+    "user": req.user
   }
 
   try {
@@ -20,15 +20,7 @@ const getCtcLetterXML = async (req, res) => {
     let userId
 
     if (req.user.id) {
-      if (!isNaN(req.user.id)) {
-        userId = req.user.id;
-        
-      } else {
-        return res.status(404).json({ error: 'is not id ' });
-      }
-    }
-    if (req.query.userid) {
-      userId = req.query.userid;
+      userId = req.user.id;
     }
     if (req.body.userid) {
       userId = req.body.userid;
@@ -53,15 +45,7 @@ const getCtcLetterJson = async (req, res) => {
     let userId
 
     if (req.user.id) {
-      if (!isNaN(req.user.id)) {
-        userId = req.user.id;
-        
-      } else {
-        return res.status(404).json({ error: 'is not id ' });
-      }
-    }
-    if (req.query.userid) {
-      userId = req.query.userid;
+      userId = req.user.id;
     }
     if (req.body.userid) {
       userId = req.body.userid;
@@ -89,15 +73,7 @@ const getCTCLetterPDF = async (req, res) => {
     let userId
 
     if (req.user.id) {
-      if (!isNaN(req.user.id)) {
-        userId = req.user.id;
-        
-      } else {
-        return res.status(404).json({ error: 'is not id ' });
-      }
-    }
-    if (req.query.userid) {
-      userId = req.query.userid;
+      userId = req.user.id;
     }
     if (req.body.userid) {
       userId = req.body.userid;
@@ -106,10 +82,10 @@ const getCTCLetterPDF = async (req, res) => {
     if (!userId) {
       return res.status(404).json({ error: 'User not found' });
     }
-  
-  
+
+
     const response = await utils.getCtcLetterJsonData(userId);
-    if(!response) {
+    if (!response) {
       return res.status(404).json({ error: 'User not found' });
     }
     const ctc_xml = await utils.getCTC_letter_XML(response);
