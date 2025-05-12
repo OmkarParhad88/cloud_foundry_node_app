@@ -174,13 +174,18 @@ async function getCtcLetterJsonData(userid) {
     name: name,
     designation: User?.title || "",
     company: company,
-    signatureName: "Ramu Gajula \nAuthorized Signatory",
+    signatureName: "Ramu Gajula (Authorized Signatory) \nGM – HR Operations (Comp & Benefits)",
+    phone: "+917625041333",
+    email: "ramu@prestigeconstructions.com",
     address: address,
     payComponent: RecurringComps || [],
     headerImage: CompanyLogo,
     signatureImage: signatureImage,
   };
   return response;
+  
+  // payComponent: RecurringComps || [],
+
 }
 
 async function getCTC_letter_XML(empData) {
@@ -200,6 +205,8 @@ async function getCTC_letter_XML(empData) {
     result.data.COMP_LOGO[0] = empData.headerImage;
     result.data.SIGN_NAME[0] = empData.signatureName;
     result.data.SIGN_LOGO[0] = empData.signatureImage;
+    result.data.PHONE_TEXT[0] = empData.phone;
+    result.data.EMAIL_TEXT[0] = empData.email;
     result.data.PAY_COMP[0].DATA = mapPayComp(empData.payComponent);
     result.data.ADDRESS1[0] = empData.address;
     result.data.GENERATED_ON[0] = empData.generated_on;
