@@ -22,12 +22,33 @@ function formatSAPDateCustom(sapDateStr) {
   }
 
   const date = new Date(timestamp);
-
   const day = date.getDate();
   const month = date.toLocaleString('en-US', { month: 'long' });
   const year = date.getFullYear();
 
   return `${day} ${month}, ${year}`;
+}
+
+function getCurrentFormattedDate() {
+  const now = new Date();
+
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  return formatter.format(now); 
+}
+
+function getFormattedTimestamp() {
+  const now = new Date().toLocaleString("en-GB", {
+    timeZone: "Asia/Kolkata", 
+    hour12: false
+  });
+
+  return `Generated on ${now}`;
 }
 
 const imageToBase64PNG = async (fileName, folder) => {
@@ -81,14 +102,6 @@ function getCompanyAddress(companies, companyName) {
   return company.footer_text;
 }
 
-function getCurrentFormattedDate() {
-  const today = new Date();
-  const day = today.getDate();
-  const month = today.toLocaleString('en-US', { month: 'long' });
-  const year = today.getFullYear();
-  return `${day} ${month}, ${year}`;
-}
-
 function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
   const payCompSRNo = require('../assets/payCompSRNO.json');
 
@@ -122,22 +135,6 @@ function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
     };
   });
   return reversedPayCompSRNo = [...RecurringComps];
-}
-
-function getFormattedTimestamp() {
-  const now = new Date();
-
-  const pad = (n) => n.toString().padStart(2, '0');
-
-  const day = pad(now.getDate());
-  const month = pad(now.getMonth() + 1);
-  const year = now.getFullYear();
-
-  const hours = pad(now.getHours());
-  const minutes = pad(now.getMinutes());
-  const seconds = pad(now.getSeconds());
-
-  return `Generated on ${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
 function mapPayComp(data) {
@@ -180,7 +177,7 @@ async function getCtcLetterJsonData(userid) {
     signatureName: "Ramu Gajula \nAuthorized Signatory",
     address: address,
     payComponent: RecurringComps || [],
-    headerImage: CompanyLogo, 
+    headerImage: CompanyLogo,
     signatureImage: signatureImage,
   };
   return response;
