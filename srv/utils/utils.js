@@ -54,8 +54,7 @@ function geEmpCompanyName(text) {
     return '';
   }
 
-
-  return text.replace(/\s*\(.*?\)\s*/g, '').trim();
+  return text.replace(/\s+/g, ' ').replace(/\s*\([^)]*\)/, '').trim();
 }
 
 function bindSalutationAndName(salutation, name) {

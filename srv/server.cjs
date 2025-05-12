@@ -9,10 +9,10 @@ const fs = require("fs");
 const passport = require('passport');
 const xsenv = require('@sap/xsenv');
 const { JWTStrategy } = require("@sap/xssec").v3;
-const PDFController = require("./controllers/PDF.controller");
+// const PDFController = require("./controllers/PDF.controller");
 
 const app = express();
-xsenv.loadEnv();
+// xsenv.loadEnv();
 let services;
 if (process.env.VCAP_SERVICES) {
   services = xsenv.getServices({ uaa: 'ctc_srv-xsuaa' });
@@ -33,14 +33,16 @@ app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, re
         message: info?.message || "Invalid or missing token"
       });
     }
-
-    if (isNaN(user.id)) {
-      return res.status(404).json({
-        id: user.id,
-        error: 'Invalid user ID format'
-      });
+    if (!req.body.userid) {
+      if (isNaN(user.id)) {
+        return res.status(404).json({
+          id: user.id,
+          error: 'Invalid user ID format'
+        });
+      }
+      req.user = user;
     }
-    req.user = user;
+
     next();
   })(req, res, next);
 }, PDFRoutes);
