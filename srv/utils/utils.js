@@ -2,8 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const xml2js = require('xml2js');
 const Sf_Api = require("../apis/Sf_Api");
-
-const e = require('express');
 const ctc_xml = fs.readFileSync(path.resolve(__dirname, '../assets/Salary_certificate.xml'), 'utf-8');
 
 function formatSAPDateCustom(sapDateStr) {
@@ -39,12 +37,12 @@ function getCurrentFormattedDate() {
     year: 'numeric'
   });
 
-  return formatter.format(now); 
+  return formatter.format(now);
 }
 
 function getFormattedTimestamp() {
   const now = new Date().toLocaleString("en-GB", {
-    timeZone: "Asia/Kolkata", 
+    timeZone: "Asia/Kolkata",
     hour12: false
   });
 
@@ -74,8 +72,9 @@ function geEmpCompanyName(text) {
   if (!text) {
     return '';
   }
+ var test = text.replace(/\s+/g, ' ').replace(/\s*\([^)]*\)/, '').replace(/\./g, '').trim();
 
-  return text.replace(/\s+/g, ' ').replace(/\s*\([^)]*\)/, '').trim();
+  return test;
 }
 
 function bindSalutationAndName(salutation, name) {
@@ -167,6 +166,7 @@ async function getCtcLetterJsonData(userid) {
   const name = bindSalutationAndName(User?.salutation, User?.displayName);
 
   let response = {
+    version: "1.2",
     generated_on: getFormattedTimestamp(),
     today: getCurrentFormattedDate(),
     joiningDate: formattedDate,
@@ -183,9 +183,6 @@ async function getCtcLetterJsonData(userid) {
     signatureImage: signatureImage,
   };
   return response;
-  
-  // payComponent: RecurringComps || [],
-
 }
 
 async function getCTC_letter_XML(empData) {
