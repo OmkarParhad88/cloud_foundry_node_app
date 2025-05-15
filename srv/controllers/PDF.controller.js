@@ -102,7 +102,7 @@ const getCTCLetterPDF = async (req, res) => {
     const fileBuffer = await Adobe_Api.getCTCLetterResponse(payload);
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", "inline; ctc_letter.pdf");
+    res.setHeader("Content-Disposition", `inline; filename="CTC letter ${userId}.pdf"`);
     res.send(fileBuffer);
   } catch (err) {
     res.status(500).json({
