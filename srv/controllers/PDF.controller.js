@@ -83,7 +83,6 @@ const getCTCLetterPDF = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-
     const response = await utils.getCtcLetterJsonData(userId);
     if (!response) {
       return res.status(404).json({ error: 'User not found' });

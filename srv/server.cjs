@@ -51,7 +51,7 @@ app.use("/", (req, res) => {
   try {
     res.status(200).json({ message: "Welcome to CTC Letter API service " });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message }); 
   }
 });
 
@@ -68,8 +68,8 @@ app.use("/", (req, res) => {
 
   //  production
 
-  const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
-  // const SF_axios = await BasicAuthAxios("SF");        // qae
+  // const SF_axios = await BasicAuthAxios("SFSFDEST");     // dev
+  const SF_axios = await BasicAuthAxios("SF");        // qae
   Sf_Api.setAxios(SF_axios);
 
   const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev

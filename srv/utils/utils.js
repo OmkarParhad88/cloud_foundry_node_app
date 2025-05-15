@@ -68,7 +68,7 @@ const imageToBase64PNG = async (fileName, folder) => {
   }
 };
 
-function geEmpCompanyName(text) {
+function geEmpCompanyName(text) { 
   if (!text) {
     return '';
   }
