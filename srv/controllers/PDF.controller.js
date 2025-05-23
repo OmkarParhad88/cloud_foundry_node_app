@@ -1,6 +1,7 @@
 const Adobe_Api = require("../apis/Adobe_Api");
 const utils = require("../utils/utils");
 
+//base url of ctc letter service
 const getBase = async (req, res) => {
   let response = {
     "success": " Welcome in CTC letter base route",
@@ -14,6 +15,7 @@ const getBase = async (req, res) => {
   }
 };
 
+// ctc letter xml response route
 const getCtcLetterXML = async (req, res) => {
   try {
 
@@ -40,6 +42,7 @@ const getCtcLetterXML = async (req, res) => {
   }
 };
 
+//
 const getCtcLetterJson = async (req, res) => {
   try {
     let userId
@@ -66,7 +69,7 @@ const getCtcLetterJson = async (req, res) => {
   }
 };
 
-
+// ctc letter pdf response route
 const getCTCLetterPDF = async (req, res) => {
   try {
 
