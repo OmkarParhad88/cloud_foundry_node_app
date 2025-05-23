@@ -166,7 +166,7 @@ async function getCtcLetterJsonData(userid) {
   const name = bindSalutationAndName(User?.salutation, User?.displayName);
 
   let response = {
-    version: "1.6",
+    version: "1.7",
     generated_on: getFormattedTimestamp(),
     today: getCurrentFormattedDate(),
     joiningDate: formattedDate,
