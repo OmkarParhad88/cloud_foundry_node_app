@@ -9,10 +9,6 @@ modules:
     parameters:
       memory: 128M
       disk-quota: 256M
-      routes:
-        - route: ctcletter-srv.${default-domain}
-      properties:
-        SRV_URL: ${default-url}
     build-parameters:
       builder: npm
     requires:
@@ -25,17 +21,6 @@ modules:
     parameters:
       memory: 128M
       disk-quota: 256M
-      routes:
-        - route: ctcletter-approuter.${default-domain}
-      env:
-        destinations: >
-          [
-           {
-             "name": "ctc_letter_dest",
-             "url": "https://ctcletter-srv.cfapps.ap10.hana.ondemand.com",
-             "forwardAuthToken": true
-           }
-          ]
     requires:
       - name: ctc_srv-xsuaa
       - name: ctcletter_srv-destination-service
@@ -46,7 +31,7 @@ resources:
     parameters:
       service: destination
       service-plan: lite
-
+      
   - name: ctc_srv-xsuaa
     type: org.cloudfoundry.managed-service
     parameters:
