@@ -4,9 +4,8 @@
   "description": "CTC Letter Service",
   "oauth2-configuration": {
     "redirect-uris": [
-      "https://ctcletter-approuter-dev.cfapps.ap10.hana.ondemand.com/login/callback",
-      "https://ctcletter-approuter-quality.cfapps.ap10.hana.ondemand.com/login/callback",
-      "https://ctcletter-approuter-production.cfapps.ap10.hana.ondemand.com/login/callback"
+      "https://prestige-estates-projects-limited-devlaunchpad-zprestig526dee4a.cfapps.ap10.hana.ondemand.com/login/callback",
+      "https://prestige-estates-projects-limited-prestige-digital-proc26120ba9.cfapps.ap10.hana.ondemand.com/login/callback"
     ],
     "token-validity": 7200
   }
