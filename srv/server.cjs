@@ -49,7 +49,7 @@ app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, re
 
 app.use("/", (req, res) => {
   try {
-    res.status(200).json({ message: "Welcome to CTC Letter API service to quality1 " });
+    res.status(200).json({ message: "Welcome to CTC Letter API service test deploy1 " });
   } catch (err) {
     res.status(500).json({ error: err.message }); 
   }
