@@ -5,7 +5,8 @@
   "oauth2-configuration": {
     "redirect-uris": [
       "https://prestige-estates-projects-limited-devlaunchpad-zprestig526dee4a.cfapps.ap10.hana.ondemand.com/login/callback",
-      "https://prestige-estates-projects-limited-prestige-digital-proc26120ba9.cfapps.ap10.hana.ondemand.com/login/callback"
+      "https://prestige-estates-projects-limited-prestige-digital-proc26120ba9.cfapps.ap10.hana.ondemand.com/login/callback",
+      "https://prestige-estates-projects-limited-prestige-digital-proc3d137e61.cfapps.ap10.hana.ondemand.com/login/callback"
     ],
     "token-validity": 7200
   }

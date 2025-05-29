@@ -62,7 +62,7 @@ app.use("/", (req, res) => {
   // const SF_axios = await BasicAuthAxios("SF");        // qae
   Sf_Api.setAxios(SF_axios);
 
-  const Adobe_axios = await OAuth2Axios("abobe_ads_rest_api"); //dev
+  const Adobe_axios = await OAuth2Axios("adobe_ads_rest_api"); //dev
   Adobe_Api.setAxios(Adobe_axios);
 
   const port = await getPort({ port: 8080 });
