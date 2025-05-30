@@ -1,4 +1,6 @@
 const Adobe_Api = require("../apis/Adobe_Api");
+const Sf_Api = require("../apis/Sf_Api");
+
 const utils = require("../utils/utils");
 
 //base url of ctc letter service
@@ -21,11 +23,18 @@ const getCtcLetterXML = async (req, res) => {
 
     let userId
 
-    if (req.user.id) {
+    if (!isNaN(req.user.id)) {
       userId = req.user.id;
+    } else {
+      var user = await Sf_Api.getEmailToUserId(req.user.emails[0].value);
+      userId = user[0].cust_userId;
     }
-    if (req.body.userid) {
-      userId = req.body.userid;
+
+    if (isNaN(userId)) {
+      return res.status(404).json({
+        id: userId,
+        error: 'Invalid user ID format'
+      });
     }
 
     if (!userId) {
@@ -47,11 +56,17 @@ const getCtcLetterJson = async (req, res) => {
   try {
     let userId
 
-    if (req.user.id) {
+    if (!isNaN(req.user.id)) {
       userId = req.user.id;
+    } else {
+      var user = await Sf_Api.getEmailToUserId(req.user.emails[0].value);
+      userId = user[0].cust_userId;
     }
-    if (req.body.userid) {
-      userId = req.body.userid;
+    if (isNaN(userId)) {
+      return res.status(404).json({
+        id: userId,
+        error: 'Invalid user ID format'
+      });
     }
 
     if (!userId) {
@@ -75,11 +90,18 @@ const getCTCLetterPDF = async (req, res) => {
 
     let userId
 
-    if (req.user.id) {
+    if (!isNaN(req.user.id)) {
       userId = req.user.id;
+    } else {
+      var user = await Sf_Api.getEmailToUserId(req.user.emails[0].value);
+      userId = user[0].cust_userId;
     }
-    if (req.body.userid) {
-      userId = req.body.userid;
+
+    if (isNaN(userId)) {
+      return res.status(404).json({
+        id: userId,
+        error: 'Invalid user ID format'
+      });
     }
 
     if (!userId) {

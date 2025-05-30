@@ -33,16 +33,7 @@ app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, re
         message: info?.message || "Invalid or missing token"
       });
     }
-    if (!req.body.userid) {
-      if (isNaN(user.id)) {
-        return res.status(404).json({
-          id: user,
-          error: 'Invalid user ID format'
-        });
-      }
-      req.user = user;
-    }
-
+    req.user = user;
     next();
   })(req, res, next);
 }, PDFRoutes);
@@ -51,7 +42,7 @@ app.use("/", (req, res) => {
   try {
     res.status(200).json({ message: "Welcome to CTC Letter API service test deploy1 " });
   } catch (err) {
-    res.status(500).json({ error: err.message }); 
+    res.status(500).json({ error: err.message });
   }
 });
 
