@@ -36,7 +36,7 @@ app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, re
     if (!req.body.userid) {
       if (isNaN(user.id)) {
         return res.status(404).json({
-          id: user.id,
+          id: user,
           error: 'Invalid user ID format'
         });
       }
