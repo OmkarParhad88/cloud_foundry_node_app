@@ -14,6 +14,8 @@ const { JWTStrategy } = require("@sap/xssec").v3;
 const app = express();
 // xsenv.loadEnv();
 let services;
+
+//check the  server env in available 
 if (process.env.VCAP_SERVICES) {
   services = xsenv.getServices({ uaa: 'ctc_srv-xsuaa' });
 } else {
@@ -25,6 +27,7 @@ app.use(express.json());
 passport.use(new JWTStrategy(services.uaa));
 app.use(passport.initialize());
 
+//ctc letter route authentication 
 app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, res, next) => {
   passport.authenticate('JWT', { session: false }, (err, user, info) => {
     if (err || !user) {
@@ -38,6 +41,8 @@ app.use("/ctcletter", passport.authenticate('JWT', { session: false }), (req, re
   })(req, res, next);
 }, PDFRoutes);
 
+
+// base route
 app.use("/", (req, res) => {
   try {
     res.status(200).json({ message: "Welcome to CTC Letter API service test deploy1 " });
@@ -46,6 +51,7 @@ app.use("/", (req, res) => {
   }
 });
 
+// if the port is busy to server use anothe port
 (async () => {
   const getPort = (await import('get-port')).default;
 

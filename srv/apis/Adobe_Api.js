@@ -2,7 +2,8 @@ let axios;
 const setAxios = (instance) => {
   axios = instance;
 };
-
+ 
+// post the respective payload and get pdf form adobe frorm instance
 const getCTCLetterResponse = async (payload) => {
   try {
     const response = await axios.post(

@@ -51,7 +51,7 @@ const getCtcLetterXML = async (req, res) => {
   }
 };
 
-//
+// ctc letter user  json response route
 const getCtcLetterJson = async (req, res) => {
   try {
     let userId
@@ -84,7 +84,7 @@ const getCtcLetterJson = async (req, res) => {
   }
 };
 
-// ctc letter pdf response route
+// ctc letter user component pdf response route
 const getCTCLetterPDF = async (req, res) => {
   try {
 

@@ -4,11 +4,11 @@ const xml2js = require('xml2js');
 const Sf_Api = require("../apis/Sf_Api");
 const ctc_xml = fs.readFileSync(path.resolve(__dirname, '../assets/Salary_certificate.xml'), 'utf-8');
 
+//formate sao date to normal data 
 function formatSAPDateCustom(sapDateStr) {
   if (!sapDateStr) {
     return "";
   }
-
   const match = sapDateStr.match(/\/Date\((\d+)\)\//);
   if (!match) {
     return "";
@@ -27,6 +27,7 @@ function formatSAPDateCustom(sapDateStr) {
   return `${day} ${month}, ${year}`;
 }
 
+//current asia timezone full day and date
 function getCurrentFormattedDate() {
   const now = new Date();
 
@@ -40,6 +41,7 @@ function getCurrentFormattedDate() {
   return formatter.format(now);
 }
 
+//get formated time stamp in normal date
 function getFormattedTimestamp() {
   const now = new Date().toLocaleString("en-GB", {
     timeZone: "Asia/Kolkata",
@@ -49,6 +51,7 @@ function getFormattedTimestamp() {
   return `Generated on ${now}`;
 }
 
+// image convert png to base64
 const imageToBase64PNG = async (fileName, folder) => {
   if (!fileName) {
     return "";
@@ -68,6 +71,7 @@ const imageToBase64PNG = async (fileName, folder) => {
   }
 };
 
+//get full company name to split  this tin compnay code and company name 
 function geEmpCompanyName(text) { 
   if (!text) {
     return '';
@@ -77,6 +81,7 @@ function geEmpCompanyName(text) {
   return test;
 }
 
+//formate the employee salutation 
 function bindSalutationAndName(salutation, name) {
   if (!name) return '';
 
@@ -88,6 +93,7 @@ function bindSalutationAndName(salutation, name) {
   return `${formattedSalutation}. ${name}`;
 }
 
+//get company address from local json file
 function getCompanyAddress(companies, companyName) {
   if (!companyName) {
     return '';
@@ -101,6 +107,7 @@ function getCompanyAddress(companies, companyName) {
   return company.footer_text;
 }
 
+//get pay component by the paycomp id
 function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
   const payCompSRNo = require('../assets/payCompSRNO.json');
 
@@ -136,6 +143,7 @@ function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
   return reversedPayCompSRNo = [...RecurringComps];
 }
 
+//map com the accrding to xml table  variable 
 function mapPayComp(data) {
   return data.map(item => ({
     LGTXT: [item.PayComponent],
@@ -143,6 +151,7 @@ function mapPayComp(data) {
   }));
 }
 
+//returns ctc letter employee respective component in json 
 async function getCtcLetterJsonData(userid) {
   const headers_footers = require("../assets/ctc_headers_footers.json");
 
@@ -185,6 +194,7 @@ async function getCtcLetterJsonData(userid) {
   return response;
 }
 
+//returns ctc letter employee respective component in xml 
 async function getCTC_letter_XML(empData) {
   const parser = new xml2js.Parser({ explicitArray: true });
   const builder = new xml2js.Builder();

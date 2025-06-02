@@ -3,6 +3,7 @@ const setAxios = (instance) => {
   axios = instance;
 };
 
+//get the  user data form sf
 const getUserResponse = async (userid) => {
   try {
     const UserData = await axios.get(`/odata/v2/User(${userid})`, {
@@ -19,6 +20,7 @@ const getUserResponse = async (userid) => {
   }
 };
 
+//get the  user email to user id form sf
 const getEmailToUserId = async (userEmail) => {
   try {
     const UserData = await axios.get(`/odata/v2/cust_Email2UserId?$filter= externalCode eq '${userEmail}'`, {
@@ -35,6 +37,7 @@ const getEmailToUserId = async (userEmail) => {
   }
 };
 
+//get the pay components data form sf
 const getFOPayComponentsResponse = async () => {
   try {
     const response = await axios.get("/odata/v2/FOPayComponent", {
@@ -47,6 +50,7 @@ const getFOPayComponentsResponse = async () => {
   }
 };
 
+//get the  user paycomponent data form sf
 const getEmpPayCompRecurringResponse = async (userId) => {
   try {
     const url = `/odata/v2/EmpPayCompRecurring?$format=json&$filter=userId eq '${userId}'`;
