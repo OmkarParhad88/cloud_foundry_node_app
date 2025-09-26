@@ -7,7 +7,9 @@ const utils = require("../utils/utils");
 const getBase = async (req, res) => {
   let response = {
     "success": " Welcome in CTC letter base route",
-    "user": req.user
+    "user": req.user,
+    "authInfo": req.authInfo,
+    "cookie": req.cookies
   }
 
   try {

@@ -52,6 +52,12 @@ const OAuth2Axios = async (destinationName) => {
                 baseURL: url,
                 headers: { Authorization: `Bearer ${accessToken}` }
             });
+            // const axios2= axios.create({
+            //     baseURL: url,
+            //     headers: { Authorization: `Bearer ${accessToken}` }
+            // });
+
+            // axios2.post("/test", { data: "test" }).then(res => console.log(res.data));
 
         } catch (error) {
             throw err;
