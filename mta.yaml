@@ -2,15 +2,29 @@ _schema-version: "3.2"
 ID: CTC_srv
 description: A simple Node.js application deployed on SAP BTP
 version: 0.0.1
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
 modules:
   - name: CTC_letter_srv
     type: nodejs
     path: srv
     parameters:
+      instances: 1
       memory: 128M
       disk-quota: 256M
+      buildpack: nodejs_buildpack
     build-parameters:
-      builder: npm
+      builder: npm-ci
+    provides:
+      - name: CTC_letter_srv-api 
+        properties:
+          srv-url: ${default-url}
     requires:
       - name: ctcletter_srv-destination-service
       - name: ctc_srv-xsuaa
@@ -19,22 +33,62 @@ modules:
     type: approuter.nodejs
     path: approuter
     parameters:
+      keep-existing-routes: true
       memory: 128M
       disk-quota: 256M
     requires:
+      - name: CTC_letter_srv-api
+        group: destinations
+        properties:
+          name: ctc_letter_dest
+          url: ~{srv-url}
+          forwardAuthToken: true
       - name: ctc_srv-xsuaa
       - name: ctcletter_srv-destination-service
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
 
 resources:
   - name: ctcletter_srv-destination-service
     type: org.cloudfoundry.managed-service
+    requires:
+      - name: CTC_letter_srv-api
     parameters:
       service: destination
       service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ctc_letter_dest
+                URL: ~{Ctc_letter_srv-api/srv-url}
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
       
   - name: ctc_srv-xsuaa
     type: org.cloudfoundry.managed-service
+    requires:
+      - name: app-api
     parameters:
-      path: ./xs-security.json
       service: xsuaa
       service-plan: application
+      config:
+        xsappname: ctc-srv-xsapp
+        tenant-mode: dedicated
+        description: CTC Letter Service
+        config:
+          oauth2-configuration:
+            redirect-uris:
+              - ~{app-api/app-uri}/login/callback
+            token-validity: 7200
+            refresh-token-validity: 7200
+        
+        

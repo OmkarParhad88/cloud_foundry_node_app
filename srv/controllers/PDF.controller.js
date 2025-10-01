@@ -8,8 +8,7 @@ const getBase = async (req, res) => {
   let response = {
     "success": " Welcome in CTC letter base route",
     "user": req.user,
-    "authInfo": req.authInfo,
-    "cookie": req.cookies
+    "authInfo": req.authInfo
   }
 
   try {

@@ -53,10 +53,7 @@ app.use("/", (req, res) => {
  try {
   res.status(200).json({
     message: "Welcome to CTC Letter API service test deploy1 ",
-    authHeader: req.headers["authorization"],
-   user: req?.user,
-   authInfo: req?.authInfo,
-   cookie: req?.cookies,
+    authHeader: req.headers["authorization"]
   });
  } catch (err) {
   res.status(500).json({ error: err.message });
