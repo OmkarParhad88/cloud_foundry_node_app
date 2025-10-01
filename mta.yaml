@@ -21,13 +21,13 @@ modules:
       buildpack: nodejs_buildpack
     build-parameters:
       builder: npm-ci
+    requires:
+      - name: ctc_srv-xsuaa
+      - name: ctcletter_srv-destination-service
     provides:
       - name: CTC_letter_srv-api 
         properties:
           srv-url: ${default-url}
-    requires:
-      - name: ctcletter_srv-destination-service
-      - name: ctc_srv-xsuaa
 
   - name: approuter
     type: approuter.nodejs
@@ -49,7 +49,7 @@ modules:
       - name: app-api
         properties:
           app-protocol: ${protocol}
-          app-uri: ${default-uri}
+          app-uri: ${default-url}
 
 resources:
   - name: ctcletter_srv-destination-service
@@ -66,12 +66,11 @@ resources:
             existing_destinations_policy: update
             destinations:
               - Name: ctc_letter_dest
-                URL: ~{Ctc_letter_srv-api/srv-url}
+                URL: ~{CTC_letter_srv-api/srv-url}
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
-                HTML5.DynamicDestination: true
       
   - name: ctc_srv-xsuaa
     type: org.cloudfoundry.managed-service
@@ -84,11 +83,10 @@ resources:
         xsappname: ctc-srv-xsapp
         tenant-mode: dedicated
         description: CTC Letter Service
-        config:
-          oauth2-configuration:
-            redirect-uris:
-              - ~{app-api/app-uri}/login/callback
-            token-validity: 7200
-            refresh-token-validity: 7200
+        oauth2-configuration:
+          redirect-uris:
+            - ~{app-api/app-uri}/login/callback
+          token-validity: 7200
+
         
         
