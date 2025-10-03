@@ -25,7 +25,7 @@ modules:
       - name: ctc_srv-xsuaa
       - name: ctcletter_srv-destination-service
     provides:
-      - name: CTC_letter_srv-api 
+      - name: srv-api
         properties:
           srv-url: ${default-url}
 
@@ -37,25 +37,19 @@ modules:
       memory: 128M
       disk-quota: 256M
     requires:
-      - name: CTC_letter_srv-api
-        group: destinations
-        properties:
-          name: ctc_letter_dest
-          url: ~{srv-url}
-          forwardAuthToken: true
       - name: ctc_srv-xsuaa
       - name: ctcletter_srv-destination-service
     provides:
       - name: app-api
         properties:
           app-protocol: ${protocol}
-          app-uri: ${default-url}
+          app-url: ${default-url}
 
 resources:
   - name: ctcletter_srv-destination-service
     type: org.cloudfoundry.managed-service
     requires:
-      - name: CTC_letter_srv-api
+      - name: srv-api
     parameters:
       service: destination
       service-plan: lite
@@ -66,12 +60,12 @@ resources:
             existing_destinations_policy: update
             destinations:
               - Name: ctc_letter_dest
-                URL: ~{CTC_letter_srv-api/srv-url}
+                URL: ~{srv-api/srv-url}
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
-      
+
   - name: ctc_srv-xsuaa
     type: org.cloudfoundry.managed-service
     requires:
@@ -85,8 +79,5 @@ resources:
         description: CTC Letter Service
         oauth2-configuration:
           redirect-uris:
-            - ~{app-api/app-uri}/login/callback
+            - ~{app-api/app-url}/login/callback
           token-validity: 7200
-
-        
-        
