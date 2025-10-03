@@ -61,6 +61,7 @@ resources:
             destinations:
               - Name: ctc_letter_dest
                 URL: ~{srv-api/srv-url}
+                Description: Destination to CTC Letter Service
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
