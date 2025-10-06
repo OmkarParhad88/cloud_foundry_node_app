@@ -27,25 +27,48 @@ passport.use(new JWTStrategy(services.uaa));
 app.use(passport.initialize());
 
 //ctc letter route authentication
+// app.use(
+//  "/ctcletter",
+//  passport.authenticate("JWT", { session: false }),
+//  (req, res, next) => {
+//   passport.authenticate("JWT", { session: false }, (err, user, info) => {
+//    if (err || !user) {
+//     return res.status(401).json({
+//      error: "Unauthorized access",
+//      message: info?.message || "Invalid or missing token",
+//      user: user || null,
+//     });
+//    }
+//    req.user = user;
+//    req.authInfo = info;
+//    console.log("user info:", user);
+//    next();
+//   })(req, res, next);
+//  },
+//  PDFRoutes
+// );
+
+//ctc letter route authentication
 app.use(
- "/ctcletter",
- passport.authenticate("JWT", { session: false }),
- (req, res, next) => {
-  passport.authenticate("JWT", { session: false }, (err, user, info) => {
-   if (err || !user) {
-    return res.status(401).json({
-     error: "Unauthorized access",
-     message: info?.message || "Invalid or missing token",
-     user: user || null,
+  "/ctcletter",
+  passport.authenticate("JWT", { session: false }),
+  (req, res, next) => {
+    console.log("✅ Authenticated user:", req.user);
+    next();
+  },
+  PDFRoutes
+);
+// user info 
+app.get(
+  "/userinfo",
+  passport.authenticate("JWT", { session: false }),
+  (req, res) => {
+    res.status(200).json({
+      message: "Authenticated user info",
+      user: req.user,
+      authInfo: req.authInfo,
     });
-   }
-   req.user = user;
-   req.authInfo = info;
-   console.log("user info:", user);
-   next();
-  })(req, res, next);
- },
- PDFRoutes
+  }
 );
 
 // base route
