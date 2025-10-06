@@ -8,4 +8,3 @@ PDFRoutes.get("/xml", PDFController.getCtcLetterXML);
 PDFRoutes.get("/pdf", PDFController.getCTCLetterPDF);
 
 module.exports = PDFRoutes;
-

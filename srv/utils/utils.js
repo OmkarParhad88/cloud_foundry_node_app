@@ -1,10 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const xml2js = require('xml2js');
+const fs = require("fs");
+const path = require("path");
+const xml2js = require("xml2js");
 const Sf_Api = require("../apis/Sf_Api");
-const ctc_xml = fs.readFileSync(path.resolve(__dirname, '../assets/Salary_certificate.xml'), 'utf-8');
+const ctc_xml = fs.readFileSync(
+  path.resolve(__dirname, "../assets/Salary_certificate.xml"),
+  "utf-8"
+);
 
-//formate sao date to normal data 
+//formate sao date to normal data
 function formatSAPDateCustom(sapDateStr) {
   if (!sapDateStr) {
     return "";
@@ -21,7 +24,7 @@ function formatSAPDateCustom(sapDateStr) {
 
   const date = new Date(timestamp);
   const day = date.getDate();
-  const month = date.toLocaleString('en-US', { month: 'long' });
+  const month = date.toLocaleString("en-US", { month: "long" });
   const year = date.getFullYear();
 
   return `${day} ${month}, ${year}`;
@@ -31,11 +34,11 @@ function formatSAPDateCustom(sapDateStr) {
 function getCurrentFormattedDate() {
   const now = new Date();
 
-  const formatter = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Asia/Kolkata',
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric'
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
   });
 
   return formatter.format(now);
@@ -45,7 +48,7 @@ function getCurrentFormattedDate() {
 function getFormattedTimestamp() {
   const now = new Date().toLocaleString("en-GB", {
     timeZone: "Asia/Kolkata",
-    hour12: false
+    hour12: false,
   });
 
   return `Generated on ${now}`;
@@ -57,63 +60,73 @@ const imageToBase64PNG = async (fileName, folder) => {
     return "";
   }
 
-  const imgFullPath = path.resolve(__dirname, `../assets/images/${folder}`, `${fileName}.png`);
+  const imgFullPath = path.resolve(
+    __dirname,
+    `../assets/images/${folder}`,
+    `${fileName}.png`
+  );
 
   if (!fs.existsSync(imgFullPath)) {
     return "";
   }
 
   try {
-    const imageBase64 = fs.readFileSync(imgFullPath, { encoding: 'base64' });
+    const imageBase64 = fs.readFileSync(imgFullPath, { encoding: "base64" });
     return imageBase64;
   } catch (err) {
     throw err;
   }
 };
 
-//get full company name to split  this tin compnay code and company name 
-function geEmpCompanyName(text) { 
+//get full company name to split  this tin compnay code and company name
+function geEmpCompanyName(text) {
   if (!text) {
-    return '';
+    return "";
   }
- var test = text.replace(/\s+/g, ' ').replace(/\s*\([^)]*\)/, '').replace(/\./g, '').trim();
+  var test = text
+    .replace(/\s+/g, " ")
+    .replace(/\s*\([^)]*\)/, "")
+    .replace(/\./g, "")
+    .trim();
 
   return test;
 }
 
-//formate the employee salutation 
+//formate the employee salutation
 function bindSalutationAndName(salutation, name) {
-  if (!name) return '';
+  if (!name) return "";
 
   if (!salutation) return name;
 
   const formattedSalutation = salutation
     ? salutation.charAt(0).toUpperCase() + salutation.slice(1).toLowerCase()
-    : '';
+    : "";
   return `${formattedSalutation}. ${name}`;
 }
 
 //get company address from local json file
 function getCompanyAddress(companies, companyName) {
   if (!companyName) {
-    return '';
+    return "";
   }
 
-  const company = companies.find(item => item.company_name === companyName);
+  const company = companies.find((item) => item.company_name === companyName);
 
-  if (!company || !company.footer_text || company.footer_text.trim() === '') {
-    return '';
+  if (!company || !company.footer_text || company.footer_text.trim() === "") {
+    return "";
   }
   return company.footer_text;
 }
 
 //get pay component by the paycomp id
 function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
-  const payCompSRNo = require('../assets/payCompSRNO.json');
+  const payCompSRNo = require("../assets/payCompSRNO.json");
 
-  var EmpPayComps = EmpPayCompsRecurring.filter(item => item.paycompvalue !== "0").map(item => ({
+  var EmpPayComps = EmpPayCompsRecurring.filter(
+    (item) => item.paycompvalue !== "0"
+  ).map((item) => ({
     externalCode: item.payComponent,
-    amount: Number(item.paycompvalue).toLocaleString('en-IN'),
+    amount: Number(item.paycompvalue).toLocaleString("en-IN"),
   }));
 
   var FOPayComps = FOPayComponents.map((item) => ({
@@ -121,12 +134,16 @@ function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
     externalCode: item.externalCode,
   }));
 
-  const matched = payCompSRNo.map(comp => EmpPayComps.find(item => item.externalCode === comp.externalCode)).filter(Boolean);
+  const matched = payCompSRNo
+    .map((comp) =>
+      EmpPayComps.find((item) => item.externalCode === comp.externalCode)
+    )
+    .filter(Boolean);
 
-  const matchedComponents = payCompSRNo.map(item => item.externalCode);
+  const matchedComponents = payCompSRNo.map((item) => item.externalCode);
 
   const unmatched = EmpPayComps.filter(
-    item => !matchedComponents.includes(item.externalCode)
+    (item) => !matchedComponents.includes(item.externalCode)
   );
 
   const orderedEmpPayComps = [...matched, ...unmatched];
@@ -136,42 +153,50 @@ function getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents) {
       (elm) => elm.externalCode === item.externalCode
     );
     return {
-      PayComponent: FOPayComp ? `${FOPayComp.compName}` : 'Unknown Component',
+      PayComponent: FOPayComp ? `${FOPayComp.compName}` : "Unknown Component",
       Amount: item.amount,
     };
   });
-  return reversedPayCompSRNo = [...RecurringComps];
+  return (reversedPayCompSRNo = [...RecurringComps]);
 }
 
-//map com the accrding to xml table  variable 
+//map com the accrding to xml table  variable
 function mapPayComp(data) {
-  return data.map(item => ({
+  return data.map((item) => ({
     LGTXT: [item.PayComponent],
-    BETRG: [item.Amount]
+    BETRG: [item.Amount],
   }));
 }
 
-//returns ctc letter employee respective component in json 
+//returns ctc letter employee respective component in json
 async function getCtcLetterJsonData(userid) {
   const headers_footers = require("../assets/ctc_headers_footers.json");
 
   const [User, EmpPayCompsRecurring, FOPayComponents] = await Promise.all([
     Sf_Api.getUserResponse(userid),
     Sf_Api.getEmpPayCompRecurringResponse(userid),
-    Sf_Api.getFOPayComponentsResponse()
+    Sf_Api.getFOPayComponentsResponse(),
   ]);
 
   if (!User) {
     return null;
   }
-  const RecurringComps = getPayCompByCompId(EmpPayCompsRecurring, FOPayComponents);
+  const RecurringComps = getPayCompByCompId(
+    EmpPayCompsRecurring,
+    FOPayComponents
+  );
 
   const company = geEmpCompanyName(User?.custom04);
   const address = getCompanyAddress(headers_footers, company);
-  const fileName = headers_footers.find((item) => item.company_name === company)?.file_name || '';
+  const fileName =
+    headers_footers.find((item) => item.company_name === company)?.file_name ||
+    "";
   const formattedDate = formatSAPDateCustom(User?.hireDate);
   const CompanyLogo = await imageToBase64PNG(fileName, "headers_images");
-  const signatureImage = await imageToBase64PNG("signature", "signature_images");
+  const signatureImage = await imageToBase64PNG(
+    "signature",
+    "signature_images"
+  );
   const name = bindSalutationAndName(User?.salutation, User?.displayName);
 
   let response = {
@@ -183,7 +208,8 @@ async function getCtcLetterJsonData(userid) {
     name: name,
     designation: User?.title || "",
     company: company,
-    signatureName: "Ramu Gajula (Authorized Signatory) \nGM – HR Operations (Comp & Benefits)",
+    signatureName:
+      "Ramu Gajula (Authorized Signatory) \nGM – HR Operations (Comp & Benefits)",
     phone: "+917625041333",
     email: "ramu@prestigeconstructions.com",
     address: address,
@@ -194,7 +220,7 @@ async function getCtcLetterJsonData(userid) {
   return response;
 }
 
-//returns ctc letter employee respective component in xml 
+//returns ctc letter employee respective component in xml
 async function getCTC_letter_XML(empData) {
   const parser = new xml2js.Parser({ explicitArray: true });
   const builder = new xml2js.Builder();
@@ -222,4 +248,15 @@ async function getCTC_letter_XML(empData) {
   return updatedXML;
 }
 
-module.exports = { formatSAPDateCustom, imageToBase64PNG, geEmpCompanyName, bindSalutationAndName, getCompanyAddress, getCurrentFormattedDate, getPayCompByCompId, getCTC_letter_XML, getFormattedTimestamp, getCtcLetterJsonData };  
+module.exports = {
+  formatSAPDateCustom,
+  imageToBase64PNG,
+  geEmpCompanyName,
+  bindSalutationAndName,
+  getCompanyAddress,
+  getCurrentFormattedDate,
+  getPayCompByCompId,
+  getCTC_letter_XML,
+  getFormattedTimestamp,
+  getCtcLetterJsonData,
+};

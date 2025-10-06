@@ -5,24 +5,13 @@ const utils = require("../utils/utils");
 
 //base url of ctc letter service
 const getBase = async (req, res) => {
-  let response = {
-    "success": " Welcome in CTC letter base route",
-    "user": req.user,
-    "authInfo": req.authInfo
-  }
-
-  try {
-    res.status(200).json(response);
-  } catch (err) {
-    res.status(500).json({ error: err });
-  }
+  res.status(200).json({ success: " Welcome in CTC letter base route" });
 };
 
 // ctc letter xml response route
 const getCtcLetterXML = async (req, res) => {
   try {
-
-    let userId
+    let userId;
 
     if (!isNaN(req.user.id)) {
       userId = req.user.id;
@@ -34,12 +23,12 @@ const getCtcLetterXML = async (req, res) => {
     if (isNaN(userId)) {
       return res.status(404).json({
         id: userId,
-        error: 'Invalid user ID format'
+        error: "Invalid user ID format",
       });
     }
 
     if (!userId) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     const response = await utils.getCtcLetterJsonData(userId);
@@ -55,7 +44,7 @@ const getCtcLetterXML = async (req, res) => {
 // ctc letter user  json response route
 const getCtcLetterJson = async (req, res) => {
   try {
-    let userId
+    let userId;
 
     if (!isNaN(req.user.id)) {
       userId = req.user.id;
@@ -66,12 +55,12 @@ const getCtcLetterJson = async (req, res) => {
     if (isNaN(userId)) {
       return res.status(404).json({
         id: userId,
-        error: 'Invalid user ID format'
+        error: "Invalid user ID format",
       });
     }
 
     if (!userId) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     const response = await utils.getCtcLetterJsonData(userId);
@@ -80,16 +69,15 @@ const getCtcLetterJson = async (req, res) => {
     res.status(500).json({
       error: true,
       message: "Internal Server Error",
-      details: err
-    })
+      details: err,
+    });
   }
 };
 
 // ctc letter user component pdf response route
 const getCTCLetterPDF = async (req, res) => {
   try {
-
-    let userId
+    let userId;
 
     if (!isNaN(req.user.id)) {
       userId = req.user.id;
@@ -101,17 +89,17 @@ const getCTCLetterPDF = async (req, res) => {
     if (isNaN(userId)) {
       return res.status(404).json({
         id: userId,
-        error: 'Invalid user ID format'
+        error: "Invalid user ID format",
       });
     }
 
     if (!userId) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     const response = await utils.getCtcLetterJsonData(userId);
     if (!response) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
     const ctc_xml = await utils.getCTC_letter_XML(response);
     const xmlBase64 = Buffer.from(ctc_xml).toString("base64");
@@ -128,14 +116,17 @@ const getCTCLetterPDF = async (req, res) => {
     const fileBuffer = await Adobe_Api.getCTCLetterResponse(payload);
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `inline; filename="CTC letter ${userId}.pdf"`);
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="CTC letter ${userId}.pdf"`
+    );
     res.send(fileBuffer);
   } catch (err) {
     res.status(500).json({
       error: true,
       message: "Internal Server Error",
-      details: err
-    })
+      details: err,
+    });
   }
 };
 
@@ -143,5 +134,5 @@ module.exports = {
   getBase,
   getCTCLetterPDF,
   getCtcLetterJson,
-  getCtcLetterXML
+  getCtcLetterXML,
 };

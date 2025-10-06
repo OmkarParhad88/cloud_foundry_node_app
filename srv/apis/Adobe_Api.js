@@ -2,14 +2,15 @@ let axios;
 const setAxios = (instance) => {
   axios = instance;
 };
- 
+
 // post the respective payload and get pdf form adobe frorm instance
 const getCTCLetterResponse = async (payload) => {
   try {
     const response = await axios.post(
-      "/v1/adsRender/pdf?templateSource=storageName&TraceLevel=2", payload,
+      "/v1/adsRender/pdf?templateSource=storageName&TraceLevel=2",
+      payload,
       {
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       }
     );
     const fileBuffer = Buffer.from(response.data.fileContent, "base64");

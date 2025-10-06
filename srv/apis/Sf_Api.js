@@ -9,7 +9,7 @@ const getUserResponse = async (userid) => {
     const UserData = await axios.get(`/odata/v2/User(${userid})`, {
       params: {
         $format: "json",
-      }
+      },
     });
     return UserData.data.d;
   } catch (err) {
@@ -23,11 +23,14 @@ const getUserResponse = async (userid) => {
 //get the  user email to user id form sf
 const getEmailToUserId = async (userEmail) => {
   try {
-    const UserData = await axios.get(`/odata/v2/cust_Email2UserId?$filter= externalCode eq '${userEmail}'`, {
-      params: {
-        $format: "json",
+    const UserData = await axios.get(
+      `/odata/v2/cust_Email2UserId?$filter= externalCode eq '${userEmail}'`,
+      {
+        params: {
+          $format: "json",
+        },
       }
-    });
+    );
     return UserData.data.d.results;
   } catch (err) {
     if (err.response.status === 404) {
@@ -41,7 +44,7 @@ const getEmailToUserId = async (userEmail) => {
 const getFOPayComponentsResponse = async () => {
   try {
     const response = await axios.get("/odata/v2/FOPayComponent", {
-      params: { $format: "json" }
+      params: { $format: "json" },
     });
 
     return response.data.d.results;
@@ -63,4 +66,10 @@ const getEmpPayCompRecurringResponse = async (userId) => {
   }
 };
 
-module.exports = { setAxios, getFOPayComponentsResponse, getUserResponse, getEmpPayCompRecurringResponse,getEmailToUserId };
+module.exports = {
+  setAxios,
+  getFOPayComponentsResponse,
+  getUserResponse,
+  getEmpPayCompRecurringResponse,
+  getEmailToUserId,
+};
